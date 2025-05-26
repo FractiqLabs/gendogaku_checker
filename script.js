@@ -13,7 +13,7 @@ class Questionnaire {
                 text: "老齢福祉年金を受給していますか？",
                 id: "pensionStatus",
                 type: "yesno",
-                yes: "first",
+                yes: "result_first",  // ← 修正ポイント
                 no: "income"
             },
             {
@@ -197,6 +197,10 @@ function handleAnswer(answer, questionId) {
 
     if (answer === 'yes' && currentQuestion.yes) {
         const nextId = currentQuestion.yes;
+        if (nextId.startsWith('result_')) {
+            questionnaire.showResult(nextId.replace('result_', ''));
+            return;
+        }
         nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
     } else if (answer === 'no' && currentQuestion.no) {
         const nextId = currentQuestion.no;
@@ -211,13 +215,10 @@ function handleAnswer(answer, questionId) {
         nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
     } else if (currentQuestion.next) {
         const nextId = currentQuestion.next;
-
-        // 修正ポイント：result なら結果画面へ
         if (nextId === 'result') {
             questionnaire.determineResult();
             return;
         }
-
         nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
     }
 
