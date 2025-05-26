@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>介護保険 負担限度額認定 判定ツール</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>介護保険 負担限度額認定 判定ツール</h1>
+        <div class="disclaimer">
+            <p>簡易判定です。詳細は市区町村にご確認ください。</p>
+            <p>本ツールは簡易的な判定を目的としており、最終的な課税・非課税の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
+            <p>本ツールのご利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
+        </div>
+        <div id="questionArea">
+            <!-- 質問がここに動的に表示されます -->
+        </div>
+        <div id="resultArea" class="hidden">
+            <h2>判定結果</h2>
+            <p id="resultText"></p>
+            <p id="resultExplanation"></p>
+            <div class="result-buttons">
+                <button onclick="goToTop()" class="back-to-top">TOP画面に戻る</button>
+                <button onclick="window.location.href='https://www.city.example.jp'" class="contact-button">市区町村に相談する</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

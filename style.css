@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: '游ゴシック', 'Yu Gothic', sans-serif;
+    line-height: 1.6;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.disclaimer {
+    text-align: center;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.question {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.option {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: white;
+}
+
+.option:hover {
+    background-color: #e9ecef;
+}
+
+.tax-info {
+    margin: 20px 0;
+    padding: 15px;
+    background-color: #fff3cd;
+    border-radius: 4px;
+}
+
+.tax-info p {
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.hidden {
+    display: none;
+}
+
+#resultArea {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+#resultText {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #28a745;
+    margin-bottom: 10px;
+}
+
+#resultExplanation {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.result-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.back-to-top {
+    background-color: #007bff;
+    color: white;
+}
+
+.contact-button {
+    background-color: #28a745;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 480px) {
+    .container {
+        margin: 10px;
+        padding: 10px;
+    }
+    
+    .result-buttons {
+        flex-direction: column;
+    }
+}
