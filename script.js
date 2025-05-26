@@ -13,7 +13,7 @@ class Questionnaire {
                 text: "老齢福祉年金を受給していますか？",
                 id: "pensionStatus",
                 type: "yesno",
-                yes: "result_first",  // ← 修正ポイント
+                yes: "result_first",  // 結果画面へ
                 no: "income"
             },
             {
@@ -191,37 +191,35 @@ function handleAnswer(answer, questionId) {
 
     questionnaire.answers[questionId] = answer;
 
-    // 次の質問を決定
-    let nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === questionId);
-    const currentQuestion = questionnaire.questions[nextQuestionIndex];
+    const currentQuestionIndex = questionnaire.questions.findIndex(q => q.id === questionId);
+    const currentQuestion = questionnaire.questions[currentQuestionIndex];
 
-    if (answer === 'yes' && currentQuestion.yes) {
-        const nextId = currentQuestion.yes;
-        if (nextId.startsWith('result_')) {
-            questionnaire.showResult(nextId.replace('result_', ''));
-            return;
-        }
-        nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
-    } else if (answer === 'no' && currentQuestion.no) {
-        const nextId = currentQuestion.no;
-        if (nextId.startsWith('result_')) {
-            questionnaire.showResult(nextId.replace('result_', ''));
-            return;
-        } else {
-            nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
-        }
-    } else if (answer === 'unknown' && currentQuestion.unknown) {
-        const nextId = currentQuestion.unknown;
-        nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
-    } else if (currentQuestion.next) {
-        const nextId = currentQuestion.next;
-        if (nextId === 'result') {
-            questionnaire.determineResult();
-            return;
-        }
-        nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
+    let nextId = null;
+
+    if (answer === 'yes') {
+        nextId = currentQuestion.yes;
+    } else if (answer === 'no') {
+        nextId = currentQuestion.no;
+    } else if (answer === 'unknown') {
+        nextId = currentQuestion.unknown;
     }
 
+    if (!nextId && currentQuestion.next) {
+        nextId = currentQuestion.next;
+    }
+
+    // 結果表示に遷移する場合
+    if (nextId && nextId.startsWith('result_')) {
+        questionnaire.showResult(nextId.replace('result_', ''));
+        return;
+    }
+
+    if (nextId === 'result') {
+        questionnaire.determineResult();
+        return;
+    }
+
+    const nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
     if (nextQuestionIndex !== -1) {
         questionnaire.showQuestion(nextQuestionIndex);
     }
