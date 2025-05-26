@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>介護保険負担限度額認定 判定ツール</title>
+    <title>介護保険 負担限度額認定 判定ツール</title>
     <link rel="stylesheet" href="style.css">
 
-    <!-- スマホアプリ風アイコン設定 -->
-    <link rel="icon" href="icon.png">
-    <link rel="apple-touch-icon" href="icon.png">
+    <!-- スマホアプリアイコン用 -->
+    <link rel="icon" href="icon.png" sizes="512x512">
+    <link rel="apple-touch-icon" href="icon.png" sizes="180x180">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ffffff">
@@ -16,14 +16,17 @@
 <body>
     <div class="container">
         <h1>介護保険 負担限度額認定 判定ツール</h1>
+
         <div class="disclaimer">
             <p>簡易判定です。詳細は市区町村にご確認ください。</p>
-            <p>本ツールは簡易的な判定を目的としており、最終的な認定・非認定の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
+            <p>本ツールは簡易的な判定を目的としており、最終的な課税・非課税の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
             <p>本ツールのご利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
         </div>
+
         <div id="questionArea">
-            <!-- 質問がここに動的に表示されます -->
+            <!-- JavaScriptで質問がここに表示されます -->
         </div>
+
         <div id="resultArea" class="hidden">
             <h2>判定結果</h2>
             <p id="resultText"></p>
@@ -34,6 +37,7 @@
             </div>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
