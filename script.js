@@ -13,7 +13,7 @@ class Questionnaire {
                 text: "老齢福祉年金を受給していますか？",
                 id: "pensionStatus",
                 type: "yesno",
-                yes: "result_first",  // 結果画面へ
+                yes: "result_first",  // 結果に直接ジャンプ
                 no: "income"
             },
             {
@@ -54,7 +54,6 @@ class Questionnaire {
                 next: "taxStatus"
             }
         ];
-        this.currentQuestionIndex = 0;
         this.answers = {};
     }
 
@@ -172,16 +171,13 @@ class Questionnaire {
     }
 }
 
-// TOP画面に戻る関数
 function goToTop() {
     window.location.reload();
 }
 
-// 初期化
 const questionnaire = new Questionnaire();
 questionnaire.showQuestion(0);
 
-// 回答処理
 function handleAnswer(answer, questionId) {
     if (answer === 'back') {
         const currentIndex = questionnaire.questions.findIndex(q => q.id === questionId);
@@ -190,37 +186,29 @@ function handleAnswer(answer, questionId) {
     }
 
     questionnaire.answers[questionId] = answer;
-
-    const currentQuestionIndex = questionnaire.questions.findIndex(q => q.id === questionId);
-    const currentQuestion = questionnaire.questions[currentQuestionIndex];
+    const question = questionnaire.questions.find(q => q.id === questionId);
 
     let nextId = null;
+    if (answer === 'yes') nextId = question.yes;
+    else if (answer === 'no') nextId = question.no;
+    else if (answer === 'unknown') nextId = question.unknown;
+    else if (question.next) nextId = question.next;
 
-    if (answer === 'yes') {
-        nextId = currentQuestion.yes;
-    } else if (answer === 'no') {
-        nextId = currentQuestion.no;
-    } else if (answer === 'unknown') {
-        nextId = currentQuestion.unknown;
-    }
-
-    if (!nextId && currentQuestion.next) {
-        nextId = currentQuestion.next;
-    }
-
-    // 結果表示に遷移する場合
+    // 結果IDなら即表示
     if (nextId && nextId.startsWith('result_')) {
-        questionnaire.showResult(nextId.replace('result_', ''));
+        const resultKey = nextId.replace('result_', '');
+        questionnaire.showResult(resultKey);
         return;
     }
 
+    // 通常の質問に遷移
     if (nextId === 'result') {
         questionnaire.determineResult();
         return;
     }
 
-    const nextQuestionIndex = questionnaire.questions.findIndex(q => q.id === nextId);
-    if (nextQuestionIndex !== -1) {
-        questionnaire.showQuestion(nextQuestionIndex);
+    const nextIndex = questionnaire.questions.findIndex(q => q.id === nextId);
+    if (nextIndex !== -1) {
+        questionnaire.showQuestion(nextIndex);
     }
 }
