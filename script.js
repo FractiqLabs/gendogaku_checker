@@ -129,8 +129,8 @@ class Questionnaire {
                 this.showResult('second');
                 return;
             } 
-            // 年収80万円超120万円以下の場合：預貯金1500万円以下なら第3段階①
-            else if (income === '120' && savingsAnswer === '1500') {
+            // 年収80万円超120万円以下の場合：預貯金1550万円以下なら第3段階①
+            else if (income === '120' && (savingsAnswer === '1500' || savingsAnswer === '1550')) {
                 this.showResult('third_1');
                 return;
             }
