@@ -2,7 +2,7 @@ class Questionnaire {
     constructor() {
         this.questions = [
             {
-                text: "あなたは市民税非課税世帯ですか？",
+                text: "対象者は市民税非課税世帯ですか？",
                 type: "yesno_unknown",
                 id: "taxStatus",
                 yes: "pensionStatus",
