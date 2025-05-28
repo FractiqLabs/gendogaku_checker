@@ -4,49 +4,173 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>限額判定くん｜介護保険負担限度額認定の簡易チェックツール</title>
-    <link rel="stylesheet" href="style.css">
-
-    <!-- モバイルアプリ対応：iPhoneアプリアイコン -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
-    <link rel="icon" href="icon.png" sizes="512x512">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <link rel="apple-touch-icon" href="https://placehold.co/180x180/3b82f6/ffffff?text=判定くん" sizes="180x180">
+    <link rel="icon" href="https://placehold.co/512x512/3b82f6/ffffff?text=判定くん" sizes="512x512">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ffffff">
-    <link rel="manifest" href="manifest.json"> <!-- PWA対応（任意） -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* bg-slate-100 */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 2rem 1rem; /* 上下左右にパディングを追加 */
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #ffffff; /* bg-white */
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
+            width: 100%;
+            max-width: 600px;
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .container {
+                padding: 2rem; /* p-8 on larger screens */
+            }
+        }
+        .question p, #resultArea h2 { /* #resultText h2 から #resultArea h2 に変更 */
+            color: #1e293b; /* text-slate-800 */
+            font-weight: 600; /* font-semibold */
+        }
+        .option {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+            text-align: center;
+            font-weight: 500; /* font-medium */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+        }
+        .option:hover {
+            background-color: #2563eb; /* bg-blue-600 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+        .tax-info { /* taxInfo 専用のスタイル（getOptionsHTMLで生成されるHTML構造に合わせる） */
+            background-color: #f1f5f9; /* bg-slate-100 Tailwindのslate-100に近い */
+            padding: 1rem; /* p-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+        }
+        .tax-info p {
+            margin-bottom: 0.25rem; /* mb-1 */
+            color: #475569; /* text-slate-600 */
+        }
+        .hidden {
+            display: none;
+        }
+        #resultArea { /* スタイル調整 */
+            border: 1px solid #e2e8f0; /* border-slate-200 */
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #f8fafc; /* bg-slate-50 */
+        }
+        #resultExplanation { 
+            color: #334155; /* text-slate-700 */
+            line-height: 1.6; /* leading-relaxed */
+            font-size: 0.875rem; /* text-sm */
+        }
+        #resultText { 
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #1e293b; /* text-slate-800 */
+            margin-bottom: 0.5rem; /* mb-2 */
+        }
+        button.action-button { 
+            color: white;
+            /* font-bold: 600; Tailwindのfont-boldクラスで指定 */
+            padding: 0.625rem 1rem; /* py-2.5 px-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            width: 100%; 
+        }
+        button.action-button:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+        .disclaimer {
+            background-color: #fefce8; /* bg-yellow-50 */
+            border: 1px solid #fef08a; /* border-yellow-200 */
+            color: #ca8a04; /* text-yellow-700 */
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .disclaimer p {
+            margin-bottom: 0.25rem; /* mb-1 */
+        }
+        .result-buttons {
+            margin-top: 1.5rem; /* mt-6 */
+            display: flex;
+            flex-direction: column; 
+            gap: 0.75rem; /* space-y-3相当 */
+        }
+        @media (min-width: 640px) { 
+            .result-buttons {
+                flex-direction: row; 
+                gap: 1rem; /* space-x-4相当 */
+            }
+            button.action-button {
+                 width: auto; 
+            }
+        }
+        #contactMessage {
+            margin-top: 1rem; /* mt-4 */
+            padding: 0.75rem; /* p-3 */
+            background-color: #eff6ff; /* bg-blue-50 */
+            color: #1d4ed8; /* text-blue-700 */
+            border: 1px solid #bfdbfe; /* border-blue-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <noscript>
-        <div style="padding: 1em; background-color: #ffdddd; color: #900;">
+        <div style="padding: 1em; background-color: #ffdddd; color: #900; text-align: center; border: 1px solid #900; margin: 1em;">
             このツールを利用するにはJavaScriptを有効にしてください。
         </div>
     </noscript>
 
     <div class="container">
-        <h1>限額判定くん</h1>
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-slate-700">限額判定くん</h1>
+        </header>
 
         <div class="disclaimer">
-            <p>簡易判定です。詳細は市区町村にご確認ください。</p>
-            <p>本ツールは簡易的な判定を目的としており、最終的な認定可否の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
-            <p>また本ツールの利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
+            <p><strong>【ご確認ください】</strong></p>
+            <p>このツールは介護保険の負担限度額認定に関する簡易的な判定を行うものです。</p>
+            <p>最終的な認定結果や詳細については、必ずお住まいの市区町村の担当窓口にご確認ください。</p>
+            <p>本ツールの利用により生じたいかなる損害についても、作成者は一切の責任を負いかねますので、あらかじめご了承ください。</p>
         </div>
 
         <div id="questionArea">
-            <!-- JavaScriptで質問がここに表示されます -->
         </div>
 
         <div id="resultArea" class="hidden">
-            <h2>判定結果</h2>
+            <h2 class="text-2xl font-bold text-slate-800 mb-3">判定結果</h2>
             <p id="resultText"></p>
-            <p id="resultExplanation"></p>
+            <p id="resultExplanation" class="mt-2"></p>
+            
             <div class="result-buttons">
-                <button onclick="goToTop()" class="back-to-top">TOP画面に戻る</button>
-                <button onclick="alert('お住まいの市区町村の窓口へお問い合わせください。')" class="contact-button">
-                    市区町村窓口に問い合わせる
-                </button>
+                <button onclick="goToTop()" class="action-button bg-gray-500 hover:bg-gray-600 back-to-top font-bold">最初の質問に戻る</button>
+                <button onclick="showContactMessage()" class="action-button bg-blue-500 hover:bg-blue-600 contact-button font-bold">市区町村窓口について</button>
+            </div>
+            <div id="contactMessage" class="hidden">
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="questionnaire.js"></script>
 </body>
 </html>
