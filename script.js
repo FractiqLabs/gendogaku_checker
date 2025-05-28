@@ -20,7 +20,6 @@ class Questionnaire {
                 text: "年間の合計所得金額はいくらですか？",
                 id: "income",
                 type: "income",
-                // thresholds: [80, 120], // このthresholdsはHTML生成には直接使われていない
                 next: "spouse"
             },
             {
@@ -34,14 +33,12 @@ class Questionnaire {
                 text: "預貯金の合計金額はいくらですか？（本人のみ）",
                 id: "savings",
                 type: "savings",
-                // thresholds: [500, 550, 650], // このthresholdsはHTML生成には直接使われていない
                 next: "result"
             },
             {
                 text: "預貯金の合計金額はいくらですか？（本人＋配偶者）",
                 id: "savings_spouse",
                 type: "savings_spouse",
-                // thresholds: [1500, 1550, 1650], // このthresholdsはHTML生成には直接使われていない
                 next: "result"
             },
             {
@@ -71,13 +68,12 @@ class Questionnaire {
     }
 
     showQuestion(index) {
-        // 質問データを questions 配列から取得
         const question = this.questions.find(q => q.id === this.questions[index].id);
         if (!question) {
             console.error("Question not found for index:", index);
             return;
         }
-        this.currentQuestionIndex = index; // 現在の質問インデックスを更新
+        this.currentQuestionIndex = index;
 
         const questionArea = document.getElementById('questionArea');
         questionArea.innerHTML = `
@@ -89,6 +85,13 @@ class Questionnaire {
                 <button onclick="goToTop()" class="mt-6 w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out">最初の質問に戻る</button>
             </div>
         `;
+        // 新しい質問が表示されるたびに、結果エリアと連絡先メッセージを隠す
+        document.getElementById('resultArea').classList.add('hidden');
+        const contactMsgEl = document.getElementById('contactMessage');
+        if (contactMsgEl) {
+            contactMsgEl.classList.add('hidden');
+            contactMsgEl.textContent = '';
+        }
     }
 
     getOptionsHTML(question) {
@@ -114,7 +117,7 @@ class Questionnaire {
                     <div class="option" onclick="handleAnswer('120+', '${question.id}')">120万円超</div>
                 `;
                 break;
-            case 'savings': // ★修正箇所: 「本人のみ」の預貯金
+            case 'savings':
                 optionsHTML = `
                     <div class="option" onclick="handleAnswer('500', '${question.id}')">500万円以下</div>
                     <div class="option" onclick="handleAnswer('550', '${question.id}')">500万円超～550万円以下</div>
@@ -141,63 +144,53 @@ class Questionnaire {
             default:
                 optionsHTML = "<p>オプションタイプエラー</p>";
         }
-        // 各オプションにスタイルを適用するためのラッパーを追加
         return optionsHTML.split('</div').map(s => s.trim() ? s + (s.includes('class="option') ? '" >' : '</div>') : '').join('');
     }
 
     determineResult() {
-        const a = this.answers; // 保存された回答
+        const a = this.answers;
 
-        // 市民税課税世帯の場合、または最初の質問で「いいえ」を選んだ場合
         if (a['taxStatus'] === 'no') {
             this.showResult('not_eligible');
             return;
         }
 
-        // 市民税非課税世帯の場合
         if (a['taxStatus'] === 'yes') {
-            // 老齢福祉年金受給者の場合
             if (a['pensionStatus'] === 'yes') {
-                this.showResult('first'); // 第1段階
+                this.showResult('first');
                 return;
             }
 
-            // 老齢福祉年金非受給者の場合
-            const income = a['income']; // '80', '120', '120+'
+            const income = a['income'];
             const hasSpouse = a['spouse'] === 'yes';
 
-            if (hasSpouse) { // 配偶者がいる場合
-                let savingsSpouseValue = a['savings_spouse']; // '1500', '1550', '1650', 'over'
+            if (hasSpouse) {
+                let savingsSpouseValue = a['savings_spouse'];
                 const savingsSpouseAmount = savingsSpouseValue === 'over' ? Infinity : parseInt(savingsSpouseValue);
 
-                if (income === '80') { // 年間収入80万円以下
-                    if (savingsSpouseAmount <= 1650) { this.showResult('second'); return; } // 第2段階
-                } else if (income === '120') { // 年間収入80万円超120万円以下
-                    if (savingsSpouseAmount <= 1550) { this.showResult('third_1'); return; } // 第3段階①
-                } else if (income === '120+') { // 年間収入120万円超
-                    if (savingsSpouseAmount <= 1500) { this.showResult('third_2'); return; } // 第3段階②
+                if (income === '80') {
+                    if (savingsSpouseAmount <= 1650) { this.showResult('second'); return; }
+                } else if (income === '120') {
+                    if (savingsSpouseAmount <= 1550) { this.showResult('third_1'); return; }
+                } else if (income === '120+') {
+                    if (savingsSpouseAmount <= 1500) { this.showResult('third_2'); return; }
                 }
-            } else { // 配偶者がいない場合
-                const savingsSelfValue = a['savings']; // '500', '550', '650', 'over_650'
-
-                // ★修正箇所: 「650万円超」を選んだ場合は対象外
+            } else {
+                const savingsSelfValue = a['savings'];
                 if (savingsSelfValue === 'over_650') {
                     this.showResult('not_eligible');
                     return;
                 }
-
-                const savingsAmount = parseInt(savingsSelfValue); // '500', '550', '650' のいずれか
-
-                if (income === '80') { // 年間収入80万円以下
-                    if (savingsAmount <= 650) { this.showResult('second'); return; } // 第2段階
-                } else if (income === '120') { // 年間収入80万円超120万円以下
-                    if (savingsAmount <= 550) { this.showResult('third_1'); return; } // 第3段階①
-                } else if (income === '120+') { // 年間収入120万円超
-                    if (savingsAmount <= 500) { this.showResult('third_2'); return; } // 第3段階②
+                const savingsAmount = parseInt(savingsSelfValue);
+                if (income === '80') {
+                    if (savingsAmount <= 650) { this.showResult('second'); return; }
+                } else if (income === '120') {
+                    if (savingsAmount <= 550) { this.showResult('third_1'); return; }
+                } else if (income === '120+') {
+                    if (savingsAmount <= 500) { this.showResult('third_2'); return; }
                 }
             }
         }
-        // 上記のいずれの条件にも当てはまらない場合は対象外
         this.showResult('not_eligible');
     }
 
@@ -217,29 +210,30 @@ class Questionnaire {
             third_2: '利用者負担段階：第3段階②<br>対象：世帯全員が市民税非課税で、本人の合計所得金額と課税年金収入額の合計が120万円超の方<br>（預貯金額等が単身で500万円以下、夫婦で1,500万円以下）',
             not_eligible: '入力された情報に基づくと、負担限度額認定の対象外である可能性が高いです。詳細は市区町村の窓口にご確認ください。'
         };
-        // 結果表示エリアを表示し、質問エリアを非表示にする
+        
         document.getElementById('questionArea').classList.add('hidden');
         const resultArea = document.getElementById('resultArea');
         resultArea.classList.remove('hidden');
 
-        document.getElementById('resultText').innerHTML = `<h2 class="text-2xl font-bold mb-2">${resultTextMap[resultKey] || "結果不明"}</h2>`;
-        document.getElementById('resultExplanation').innerHTML = `<p class="text-md">${resultExplanationMap[resultKey] || "詳細な説明はありません。"}</p>`;
+        document.getElementById('resultText').textContent = resultTextMap[resultKey] || "結果不明";
+        document.getElementById('resultExplanation').innerHTML = resultExplanationMap[resultKey] || "詳細な説明はありません。";
+        
+        // 連絡先メッセージエリアをクリアして隠す
+        const contactMsgEl = document.getElementById('contactMessage');
+        if (contactMsgEl) {
+            contactMsgEl.classList.add('hidden');
+            contactMsgEl.textContent = '';
+        }
     }
 }
 
-// ページ読み込み時に最初の質問を表示
 const questionnaire = new Questionnaire();
-// HTML側に<body onload="startQuestionnaire()">などを追加するか、
-// scriptをbodyの最後に配置する場合は直接呼び出し
-// window.onload = () => questionnaire.showQuestion(0); // 最初の質問(id: taxStatus)のインデックスは0
 
-// グローバルスコープに関数を配置
 window.handleAnswer = function(answer, questionId) {
     const currentQuestion = questionnaire.questions.find(q => q.id === questionId);
     if (!currentQuestion) return;
 
     if (questionId === 'taxInfo' && answer === 'back') {
-        // taxInfoから戻る場合は、taxStatusの質問を表示する
         const targetIndex = questionnaire.questions.findIndex(q => q.id === currentQuestion.next);
         if (targetIndex !== -1) {
             questionnaire.showQuestion(targetIndex);
@@ -255,7 +249,6 @@ window.handleAnswer = function(answer, questionId) {
     else if (answer === 'unknown' && currentQuestion.unknown) nextQuestionId = currentQuestion.unknown;
     else if (currentQuestion.next) nextQuestionId = currentQuestion.next;
 
-
     if (nextQuestionId === 'result') {
         questionnaire.determineResult();
     } else if (nextQuestionId) {
@@ -264,37 +257,29 @@ window.handleAnswer = function(answer, questionId) {
             questionnaire.showQuestion(nextIndex);
         } else {
             console.error("Next question ID not found:", nextQuestionId);
-            questionnaire.determineResult(); // フォールバックとして結果表示を試みる
+            questionnaire.determineResult();
         }
     } else {
-         // nextQuestionId が null だが、結果でもない場合 (通常は income, savings, savings_spouse の後)
-         // これらの質問タイプは 'next' プロパティで次の質問IDを指定しているはず
-         // もし 'next' が 'result' 以外で、かつ yes/no/unknown にも該当しない場合、
-         // 'next' が指定されていればそれに従う。
-         // ここに来るケースは、主に income, savings, savings_spouse の選択肢を選んだ時。
-         // これらの質問は 'next' プロパティで次の遷移先を指定している。
-         // その 'next' が 'result' であれば、上で処理される。
-         // もし、特定の回答によって遷移先を変えない質問タイプで、'next' も 'result' でない場合は、
-         // ここで determineResult を呼ぶか、エラー処理が必要。
-         // 現状の定義では、income, savings, savings_spouse は next: "result" または next: "次の質問ID" を持つ。
-         // よって、ここに来ることは基本的にはないはず。
         console.warn("No specific next question or result determined for:", questionId, "with answer:", answer);
-        questionnaire.determineResult(); // 安全策として結果表示
+        questionnaire.determineResult();
     }
 }
 
 window.goToTop = function() {
-    // ページをリロードするか、最初の質問を再表示する
-    // questionnaire.answers = {}; // 回答をリセット
-    // questionnaire.showQuestion(0);
-    // document.getElementById('resultArea').classList.add('hidden');
-    // document.getElementById('questionArea').classList.remove('hidden');
-    window.location.reload(); // 簡単なリセット方法としてリロード
+    window.location.reload();
 }
 
-// HTMLが完全に読み込まれてから実行
+// ★追加: 市区町村への問い合わせメッセージを表示する関数
+window.showContactMessage = function() {
+    const contactMessageDiv = document.getElementById('contactMessage');
+    if (contactMessageDiv) {
+        contactMessageDiv.textContent = 'お住まいの市区町村の窓口へ直接お問い合わせください。このツールはあくまで簡易判定です。';
+        contactMessageDiv.classList.remove('hidden');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
-    questionnaire.showQuestion(0); // 最初の質問を表示
+    questionnaire.showQuestion(0);
 });
 ```html
 <!DOCTYPE html>
@@ -302,83 +287,168 @@ document.addEventListener('DOMContentLoaded', () => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>介護保険負担限度額認定 簡易判定</title>
+    <title>限額判定くん｜介護保険負担限度額認定の簡易チェックツール</title>
     <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    
+    <link rel="apple-touch-icon" href="[https://placehold.co/180x180/3b82f6/ffffff?text=判定くん](https://placehold.co/180x180/3b82f6/ffffff?text=判定くん)" sizes="180x180">
+    <link rel="icon" href="[https://placehold.co/512x512/3b82f6/ffffff?text=判定くん](https://placehold.co/512x512/3b82f6/ffffff?text=判定くん)" sizes="512x512">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* Tailwindのbg-slate-100に近い */
+            background-color: #f0f4f8; /* bg-slate-100 */
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* 上寄せに変更 */
+            align-items: flex-start;
             min-height: 100vh;
-            padding-top: 2rem; /* 上部に余白を追加 */
-            padding-bottom: 2rem; /* 下部に余白を追加 */
+            padding: 2rem 1rem; /* 上下左右にパディングを追加 */
+            box-sizing: border-box;
         }
         .container {
-            background-color: #ffffff; /* Tailwindのbg-white */
-            padding: 2rem; /* Tailwindのp-8 */
-            border-radius: 0.75rem; /* Tailwindのrounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Tailwindのshadow-xl */
+            background-color: #ffffff; /* bg-white */
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
             width: 100%;
-            max-width: 600px; /* コンテナの最大幅 */
+            max-width: 600px;
         }
-        .question p, #resultText h2 {
-            color: #1e293b; /* Tailwindのtext-slate-800 */
-            font-weight: 600; /* Tailwindのfont-semibold */
+        @media (min-width: 640px) { /* sm breakpoint */
+            .container {
+                padding: 2rem; /* p-8 on larger screens */
+            }
+        }
+        .question p, #resultArea h2 { /* #resultText h2 から #resultArea h2 に変更 */
+            color: #1e293b; /* text-slate-800 */
+            font-weight: 600; /* font-semibold */
         }
         .option {
-            background-color: #3b82f6; /* Tailwindのbg-blue-500 */
+            background-color: #3b82f6; /* bg-blue-500 */
             color: white;
-            padding: 0.75rem 1.5rem; /* Tailwindのpy-3 px-6 */
-            border-radius: 0.5rem; /* Tailwindのrounded-lg */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.5rem; /* rounded-lg */
             cursor: pointer;
             transition: background-color 0.2s ease-in-out;
             text-align: center;
-            font-weight: 500; /* Tailwindのfont-medium */
+            font-weight: 500; /* font-medium */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
         }
         .option:hover {
-            background-color: #2563eb; /* Tailwindのbg-blue-600 */
+            background-color: #2563eb; /* bg-blue-600 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
         }
         .tax-info p {
-            margin-bottom: 0.5rem; /* Tailwindのmb-2 */
-            color: #475569; /* Tailwindのtext-slate-600 */
+            margin-bottom: 0.5rem; /* mb-2 */
+            color: #475569; /* text-slate-600 */
         }
         .hidden {
             display: none;
         }
-        #resultArea {
-            border: 1px solid #e2e8f0; /* Tailwindのborder-slate-200 */
-            padding: 1.5rem; /* Tailwindのp-6 */
-            border-radius: 0.5rem; /* Tailwindのrounded-lg */
-            background-color: #f8fafc; /* Tailwindのbg-slate-50 */
+        #resultArea { /* スタイル調整 */
+            border: 1px solid #e2e8f0; /* border-slate-200 */
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.5rem; /* rounded-lg */
+            background-color: #f8fafc; /* bg-slate-50 */
         }
-        #resultExplanation p {
-            color: #334155; /* Tailwindのtext-slate-700 */
-            line-height: 1.6; /* Tailwindのleading-relaxed */
+        #resultExplanation { /* <p>タグに直接スタイルを適用するので、クラスは不要な場合も */
+            color: #334155; /* text-slate-700 */
+            line-height: 1.6; /* leading-relaxed */
+            font-size: 0.875rem; /* text-sm */
         }
-         /* ボタン共通スタイル */
-        button, .option {
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwindのshadow-md */
+        #resultText { /* 結果テキストのスタイル */
+            font-size: 1.25rem; /* text-xl */
+            font-weight: 600; /* font-semibold */
+            color: #1e293b; /* text-slate-800 */
+            margin-bottom: 0.5rem; /* mb-2 */
         }
-        button:hover, .option:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* Tailwindのshadow-lg */
+        button.action-button { /* 共通ボタンスタイル */
+            color: white;
+            font-bold: 600; /* font-bold */
+            padding: 0.625rem 1rem; /* py-2.5 px-4 */
+            border-radius: 0.375rem; /* rounded-md */
+            transition: background-color 0.15s ease-in-out;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            width: 100%; /* 幅を100%に */
+        }
+        button.action-button:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+        }
+        /* ★追加: 免責事項のスタイル */
+        .disclaimer {
+            background-color: #fefce8; /* bg-yellow-50 */
+            border: 1px solid #fef08a; /* border-yellow-200 */
+            color: #ca8a04; /* text-yellow-700 */
+            padding: 0.75rem; /* p-3 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
+            margin-bottom: 1.5rem; /* mb-6 */
+        }
+        .disclaimer p {
+            margin-bottom: 0.25rem; /* mb-1 */
+        }
+        /* ★追加: 結果エリアのボタンスタイル */
+        .result-buttons {
+            margin-top: 1.5rem; /* mt-6 */
+            display: flex;
+            flex-direction: column; /* ボタンを縦に並べる */
+            gap: 0.75rem; /* space-y-3相当 */
+        }
+        @media (min-width: 640px) { /* sm breakpoint */
+            .result-buttons {
+                flex-direction: row; /* 横並びに戻す */
+                gap: 1rem; /* space-x-4相当 */
+            }
+            button.action-button {
+                 width: auto; /* 幅を自動に */
+            }
+        }
+        /* ★追加: 問い合わせメッセージのスタイル */
+        #contactMessage {
+            margin-top: 1rem; /* mt-4 */
+            padding: 0.75rem; /* p-3 */
+            background-color: #eff6ff; /* bg-blue-50 */
+            color: #1d4ed8; /* text-blue-700 */
+            border: 1px solid #bfdbfe; /* border-blue-200 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 0.875rem; /* text-sm */
         }
     </style>
     <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)" rel="stylesheet">
 </head>
 <body>
+    <noscript>
+        <div style="padding: 1em; background-color: #ffdddd; color: #900; text-align: center; border: 1px solid #900; margin: 1em;">
+            このツールを利用するにはJavaScriptを有効にしてください。
+        </div>
+    </noscript>
+
     <div class="container">
-        <header class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-slate-700">介護保険負担限度額認定</h1>
-            <p class="text-md text-slate-500">簡易判定シミュレーション</p>
-        </header>
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-slate-700">限額判定くん</h1>
+            </header>
+
+        <div class="disclaimer">
+            <p><strong>【ご確認ください】</strong></p>
+            <p>このツールは介護保険の負担限度額認定に関する簡易的な判定を行うものです。</p>
+            <p>最終的な認定結果や詳細については、必ずお住まいの市区町村の担当窓口にご確認ください。</p>
+            <p>本ツールの利用により生じたいかなる損害についても、作成者は一切の責任を負いかねますので、あらかじめご了承ください。</p>
+        </div>
+
         <div id="questionArea">
             </div>
-        <div id="resultArea" class="hidden mt-6">
-            <div id="resultText" class="mb-4"></div>
-            <div id="resultExplanation" class="text-sm"></div>
-            <button onclick="goToTop()" class="mt-8 w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded-md transition duration-150 ease-in-out">もう一度判定する</button>
+
+        <div id="resultArea" class="hidden">
+            <h2 class="text-2xl font-bold text-slate-800 mb-3">判定結果</h2>
+            <p id="resultText"></p>
+            <p id="resultExplanation" class="mt-2"></p>
+            
+            <div class="result-buttons">
+                <button onclick="goToTop()" class="action-button bg-gray-500 hover:bg-gray-600 back-to-top">最初の質問に戻る</button>
+                <button onclick="showContactMessage()" class="action-button bg-blue-500 hover:bg-blue-600 contact-button">市区町村窓口について</button>
+            </div>
+            <div id="contactMessage" class="hidden">
+                </div>
         </div>
     </div>
     </body>
