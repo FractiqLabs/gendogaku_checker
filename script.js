@@ -124,22 +124,30 @@ class Questionnaire {
 
         if (hasSpouse) {
             const savingsAnswer = a['savings_spouse'];
-            if (income === '80' && (savingsAnswer === '1500' || savingsAnswer === '1550')) {
+            // 年収80万円以下の場合：預貯金1550万円以下なら第2段階
+            if (income === '80' && savingsAnswer !== 'over1550') {
                 this.showResult('second');
                 return;
-            } else if (income === '120' && savingsAnswer === '1500') {
+            } 
+            // 年収80万円超120万円以下の場合：預貯金1500万円以下なら第3段階①
+            else if (income === '120' && savingsAnswer === '1500') {
                 this.showResult('third_1');
                 return;
             }
         } else {
             const savingsAnswer = a['savings_single'];
-            if (income === '80' && (savingsAnswer === '500' || savingsAnswer === '550' || savingsAnswer === '650')) {
+            // 年収80万円以下の場合：預貯金650万円以下なら第2段階
+            if (income === '80' && savingsAnswer !== 'over650') {
                 this.showResult('second');
                 return;
-            } else if (income === '120' && (savingsAnswer === '500' || savingsAnswer === '550')) {
+            } 
+            // 年収80万円超120万円以下の場合：預貯金550万円以下なら第3段階①
+            else if (income === '120' && (savingsAnswer === '500' || savingsAnswer === '550')) {
                 this.showResult('third_1');
                 return;
-            } else if (income === '120+' && savingsAnswer === '500') {
+            } 
+            // 年収120万円超の場合：預貯金500万円以下なら第3段階②
+            else if (income === '120+' && savingsAnswer === '500') {
                 this.showResult('third_2');
                 return;
             }
