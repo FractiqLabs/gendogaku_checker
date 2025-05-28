@@ -1,4 +1,3 @@
-// script.js（修正後）
 
 class Questionnaire {
     constructor() {
@@ -8,14 +7,14 @@ class Questionnaire {
                 type: "yesno_unknown",
                 id: "taxStatus",
                 yes: "pensionStatus",
-                no: "result_not_eligible",
+                no: "result",
                 unknown: "taxInfo"
             },
             {
                 text: "老齢福祉年金を受給していますか？",
                 id: "pensionStatus",
                 type: "yesno",
-                yes: "result_first",
+                yes: "result",
                 no: "income"
             },
             {
@@ -23,43 +22,47 @@ class Questionnaire {
                 id: "income",
                 type: "income",
                 thresholds: [80, 120],
-                next: "hasSpouse"
+                next: "spouse"
             },
             {
                 text: "配偶者はいますか？",
-                id: "hasSpouse",
+                id: "spouse",
                 type: "yesno",
-                yes: "savingsWithSpouse",
-                no: "savingsAlone"
+                yes: "savings_spouse",
+                no: "savings"
             },
             {
                 text: "預貯金の合計金額はいくらですか？（本人のみ）",
-                id: "savingsAlone",
-                type: "savingsAlone",
+                id: "savings",
+                type: "savings",
+                thresholds: [500, 550, 650],
                 next: "result"
             },
             {
                 text: "預貯金の合計金額はいくらですか？（本人＋配偶者）",
-                id: "savingsWithSpouse",
-                type: "savingsWithSpouse",
+                id: "savings_spouse",
+                type: "savings_spouse",
+                thresholds: [1500, 1550, 1650],
                 next: "result"
             },
             {
-                text: "住民税の非課税要件についてご説明します。以下のいずれかに該当する場合は非課税となります：",
+                text: "住民税の非課税要件についてご説明します。",
                 id: "taxInfo",
                 type: "taxInfo",
                 info: [
-                    "1. 均等割と所得割がともに非課税とされる方：",
-                    "　- 生活保護を受けている方",
-                    "　- 障害者、未成年、寡婦、ひとり親で所得135万円以下の方",
+                    "1. 均等割と所得割がともに非課税とされる方",
+                    "（1）生活保護法の規定による生活扶助を受けている方",
+                    "（2）障害者、未成年者、寡婦又はひとり親で前年の合計所得金額が135万円以下の方",
                     "",
-                    "2. 均等割のみ非課税：",
-                    "　- 所得が一定基準以下の方（基準は地域や世帯構成による）",
+                    "2. 均等割が非課税とされる方",
+                    "前年の合計所得金額が以下の基準以下の方：",
+                    "1級地：35万円×世帯人数 + 10万円 + 21万円",
+                    "2級地：31.5万円×世帯人数 + 10万円 + 18.9万円",
+                    "3級地：28万円×世帯人数 + 10万円 + 16.8万円",
                     "",
-                    "3. 所得割のみ非課税：",
-                    "　- 総所得が35万円×世帯人数+10万円+32万円以下の方",
-                    "",
-                    "※ 詳細は自治体窓口でご確認ください。"
+                    "3. 所得割が非課税とされる方",
+                    "35万円×世帯人数 + 10万円 + 32万円 以下の方",
+                    "*加算要件等の詳細は市町村の条例に準じます。"
                 ],
                 next: "taxStatus"
             }
@@ -100,24 +103,23 @@ class Questionnaire {
                     <div class="option" onclick="handleAnswer('120', '${question.id}')">80万円超120万円以下</div>
                     <div class="option" onclick="handleAnswer('120+', '${question.id}')">120万円超</div>
                 `;
-            case 'savingsAlone':
+            case 'savings':
                 return `
                     <div class="option" onclick="handleAnswer('500', '${question.id}')">500万円以下</div>
                     <div class="option" onclick="handleAnswer('550', '${question.id}')">550万円以下</div>
                     <div class="option" onclick="handleAnswer('650', '${question.id}')">650万円以下</div>
-                    <div class="option" onclick="handleAnswer('over', '${question.id}')">650万円超</div>
                 `;
-            case 'savingsWithSpouse':
+            case 'savings_spouse':
                 return `
                     <div class="option" onclick="handleAnswer('1500', '${question.id}')">(配偶者合計)1500万円以下</div>
                     <div class="option" onclick="handleAnswer('1550', '${question.id}')">(配偶者合計)1550万円以下</div>
                     <div class="option" onclick="handleAnswer('1650', '${question.id}')">(配偶者合計)1650万円以下</div>
-                    <div class="option" onclick="handleAnswer('over', '${question.id}')">(配偶者合計)1650万円超</div>
+                    <div class="option" onclick="handleAnswer('over', '${question.id}')">(配偶者合計)1650万円以上</div>
                 `;
             case 'taxInfo':
                 return `
                     <div class="tax-info">
-                        ${question.info.map(item => `<p>${item}</p>`).join('')}
+                        ${question.info.filter(item => item.trim()).map(item => `<p>${item}</p>`).join('')}
                     </div>
                     <div class="option" onclick="handleAnswer('back', '${question.id}')">戻る</div>
                 `;
@@ -125,85 +127,56 @@ class Questionnaire {
     }
 
     determineResult() {
-        const { taxStatus, pensionStatus, income, hasSpouse, savingsAlone, savingsWithSpouse } = this.answers;
+        const a = this.answers;
+        if (a['taxStatus'] === 'yes') {
+            if (a['pensionStatus'] === 'yes') {
+                this.showResult('first');
+                return;
+            }
 
-        if (taxStatus === 'no') {
-            this.showResult('not_eligible');
-            return;
-        }
+            const income = a['income'];
+            const hasSpouse = a['spouse'] === 'yes';
 
-        if (pensionStatus === 'yes') {
-            this.showResult('first');
-            return;
-        }
+            let savings = a[hasSpouse ? 'savings_spouse' : 'savings'];
+            savings = savings === 'over' ? Infinity : parseInt(savings);
 
-        if (income === '80') {
-            if (hasSpouse === 'yes') {
-                if (savingsWithSpouse === '1650') {
-                    this.showResult('second');
-                } else if (savingsWithSpouse === 'over') {
-                    this.showResult('not_eligible');
-                } else {
-                    this.showResult('not_eligible');
+            if (income === '80') {
+                if ((hasSpouse && savings <= 1650) || (!hasSpouse && savings <= 650)) {
+                    this.showResult('second'); return;
                 }
-            } else {
-                if (savingsAlone <= 650) {
-                    this.showResult('second');
-                } else {
-                    this.showResult('not_eligible');
+            } else if (income === '120') {
+                if ((hasSpouse && savings <= 1550) || (!hasSpouse && savings <= 550)) {
+                    this.showResult('third_1'); return;
+                }
+            } else if (income === '120+') {
+                if ((hasSpouse && savings <= 1500) || (!hasSpouse && savings <= 500)) {
+                    this.showResult('third_2'); return;
                 }
             }
-        } else if (income === '120') {
-            if (hasSpouse === 'yes') {
-                if (savingsWithSpouse === '1550') {
-                    this.showResult('third_1');
-                } else {
-                    this.showResult('not_eligible');
-                }
-            } else {
-                if (savingsAlone <= 550) {
-                    this.showResult('third_1');
-                } else {
-                    this.showResult('not_eligible');
-                }
-            }
-        } else if (income === '120+') {
-            if (hasSpouse === 'yes') {
-                if (savingsWithSpouse === '1500') {
-                    this.showResult('third_2');
-                } else {
-                    this.showResult('not_eligible');
-                }
-            } else {
-                if (savingsAlone <= 500) {
-                    this.showResult('third_2');
-                } else {
-                    this.showResult('not_eligible');
-                }
-            }
-        } else {
-            this.showResult('not_eligible');
         }
+        this.showResult('not_eligible');
     }
 
     showResult(result) {
-        const resultText = document.getElementById('resultText');
-        const resultExplanation = document.getElementById('resultExplanation');
-        const resultArea = document.getElementById('resultArea');
-
-        const results = {
-            first: ['あなたは第1段階に該当する可能性があります', '非課税世帯かつ老齢福祉年金受給者です。'],
-            second: ['あなたは第2段階に該当する可能性があります', '非課税世帯かつ収入80万円以下で預貯金基準以下です。'],
-            third_1: ['あなたは第3段階①に該当する可能性があります', '収入80万円超120万円以下かつ預貯金基準以下の非課税世帯です。'],
-            third_2: ['あなたは第3段階②に該当する可能性があります', '収入120万円超かつ預貯金基準以下の非課税世帯です。'],
-            not_eligible: ['限度額認定の対象外の可能性があります', '条件に該当しないため、自治体にご相談ください。']
+        const textMap = {
+            first: 'あなたは第1段階に該当する可能性があります',
+            second: 'あなたは第2段階に該当する可能性があります',
+            third_1: 'あなたは第3段階①に該当する可能性があります',
+            third_2: 'あなたは第3段階②に該当する可能性があります',
+            not_eligible: '負担限度額認定の対象外の可能性があります'
         };
 
-        const [title, explanation] = results[result] || results['not_eligible'];
+        const explanationMap = {
+            first: '非課税世帯で老齢福祉年金受給者の場合です。',
+            second: '年間収入80万円以下で預貯金が所定の範囲内の非課税世帯の場合です。',
+            third_1: '年間収入80万円超120万円以下で預貯金が所定の範囲内の非課税世帯の場合です。',
+            third_2: '年間収入120万円超で預貯金が所定の範囲内の非課税世帯の場合です。',
+            not_eligible: '市民税課税世帯または条件を満たさない場合です。'
+        };
 
-        resultText.textContent = title;
-        resultExplanation.textContent = explanation;
-        resultArea.classList.remove('hidden');
+        document.getElementById('resultText').textContent = textMap[result];
+        document.getElementById('resultExplanation').textContent = explanationMap[result];
+        document.getElementById('resultArea').classList.remove('hidden');
     }
 }
 
@@ -229,12 +202,6 @@ function handleAnswer(answer, questionId) {
     else if (answer === 'no') nextId = question.no;
     else if (answer === 'unknown') nextId = question.unknown;
     else if (question.next) nextId = question.next;
-
-    if (nextId && nextId.startsWith('result_')) {
-        const resultKey = nextId.replace('result_', '');
-        questionnaire.showResult(resultKey);
-        return;
-    }
 
     if (nextId === 'result') {
         questionnaire.determineResult();
