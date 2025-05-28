@@ -1,4 +1,3 @@
-
 class Questionnaire {
     constructor() {
         this.questions = [
@@ -123,25 +122,24 @@ class Questionnaire {
         const income = a['income'];
         const hasSpouse = a['spouse'] === 'yes';
 
-        let savings = 0;
         if (hasSpouse) {
-            savings = parseInt(a['savings_spouse']);
-            if (income === '80' && savings <= 1550) {
+            const savingsAnswer = a['savings_spouse'];
+            if (income === '80' && (savingsAnswer === '1500' || savingsAnswer === '1550')) {
                 this.showResult('second');
                 return;
-            } else if (income === '120' && savings <= 1500) {
+            } else if (income === '120' && savingsAnswer === '1500') {
                 this.showResult('third_1');
                 return;
             }
         } else {
-            savings = parseInt(a['savings_single']);
-            if (income === '80' && savings <= 650) {
+            const savingsAnswer = a['savings_single'];
+            if (income === '80' && (savingsAnswer === '500' || savingsAnswer === '550' || savingsAnswer === '650')) {
                 this.showResult('second');
                 return;
-            } else if (income === '120' && savings <= 550) {
+            } else if (income === '120' && (savingsAnswer === '500' || savingsAnswer === '550')) {
                 this.showResult('third_1');
                 return;
-            } else if (income === '120+' && savings <= 500) {
+            } else if (income === '120+' && savingsAnswer === '500') {
                 this.showResult('third_2');
                 return;
             }
