@@ -68,7 +68,16 @@ class Questionnaire {
     }
 
     showQuestion(index) {
-        const question = this.questions.find(q => q.id === this.questions[index].id);
+        // questions 配列の範囲外のインデックスが指定された場合のエラーハンドリング
+        if (index < 0 || index >= this.questions.length) {
+            console.error("Invalid question index:", index);
+            // 最初の質問を表示するなどのフォールバック処理
+            this.currentQuestionIndex = 0;
+            index = 0;
+            // return; // ここで処理を中断すると何も表示されなくなる可能性
+        }
+
+        const question = this.questions[index]; // questions[index] を直接使用
         if (!question) {
             console.error("Question not found for index:", index);
             return;
@@ -76,6 +85,10 @@ class Questionnaire {
         this.currentQuestionIndex = index;
 
         const questionArea = document.getElementById('questionArea');
+        if (!questionArea) {
+            console.error("#questionArea not found in HTML.");
+            return;
+        }
         questionArea.innerHTML = `
             <div class="question bg-white p-6 rounded-lg shadow-md">
                 <p class="text-xl font-semibold mb-4">${question.text}</p>
@@ -86,7 +99,10 @@ class Questionnaire {
             </div>
         `;
         // 新しい質問が表示されるたびに、結果エリアと連絡先メッセージを隠す
-        document.getElementById('resultArea').classList.add('hidden');
+        const resultAreaEl = document.getElementById('resultArea');
+        if (resultAreaEl) {
+            resultAreaEl.classList.add('hidden');
+        }
         const contactMsgEl = document.getElementById('contactMessage');
         if (contactMsgEl) {
             contactMsgEl.classList.add('hidden');
@@ -144,7 +160,27 @@ class Questionnaire {
             default:
                 optionsHTML = "<p>オプションタイプエラー</p>";
         }
-        return optionsHTML.split('</div').map(s => s.trim() ? s + (s.includes('class="option') ? '" >' : '</div>') : '').join('');
+        // 各オプションにスタイルを適用するためのラッパーを追加
+        // この部分は意図通りに動作しているか確認が必要。div要素が正しく閉じられているかなど。
+        // 元のコードでは、 </div の後が > で終わるべきところで " > となっていたり、
+        // class="option" がない場合に </div> が追加されたりする可能性があった。
+        // より安全な方法としては、各選択肢を個別のdivで囲むことを推奨。
+        // 例: return question.options.map(opt => `<div class="option" onclick="...">${opt.text}</div>`).join('');
+        // 現在の optionsHTML の生成方法だと、最後の </div> が不足する可能性がある。
+        // 修正案：各選択肢を完全なHTML文字列として生成する。
+        let completeOptionsHTML = '';
+        const optionsArray = optionsHTML.match(/<div class="option".*?<\/div>/g);
+        if (optionsArray) {
+            completeOptionsHTML = optionsArray.join('');
+        } else if (question.type === 'taxInfo') { // taxInfoの場合は特殊なので別途処理
+             const taxInfoContent = question.info.filter(item => item.trim()).map(item => `<p class="mb-1">${item}</p>`).join('');
+             const backButton = `<div class="option mt-4" onclick="handleAnswer('back', '${question.id}')">確認したので戻る</div>`;
+             completeOptionsHTML = `<div class="tax-info bg-gray-100 p-4 rounded-md text-sm">${taxInfoContent}</div>${backButton}`;
+        } else {
+            completeOptionsHTML = optionsHTML; // エラーケースやその他のタイプ
+        }
+        return completeOptionsHTML;
+
     }
 
     determineResult() {
@@ -211,14 +247,24 @@ class Questionnaire {
             not_eligible: '入力された情報に基づくと、負担限度額認定の対象外である可能性が高いです。詳細は市区町村の窓口にご確認ください。'
         };
         
-        document.getElementById('questionArea').classList.add('hidden');
-        const resultArea = document.getElementById('resultArea');
-        resultArea.classList.remove('hidden');
-
-        document.getElementById('resultText').textContent = resultTextMap[resultKey] || "結果不明";
-        document.getElementById('resultExplanation').innerHTML = resultExplanationMap[resultKey] || "詳細な説明はありません。";
+        const questionAreaEl = document.getElementById('questionArea');
+        if (questionAreaEl) {
+            questionAreaEl.classList.add('hidden');
+        }
+        const resultAreaEl = document.getElementById('resultArea');
+        if (resultAreaEl) {
+            resultAreaEl.classList.remove('hidden');
+        }
         
-        // 連絡先メッセージエリアをクリアして隠す
+        const resultTextEl = document.getElementById('resultText');
+        if (resultTextEl) {
+            resultTextEl.textContent = resultTextMap[resultKey] || "結果不明";
+        }
+        const resultExplanationEl = document.getElementById('resultExplanation');
+        if (resultExplanationEl) {
+            resultExplanationEl.innerHTML = resultExplanationMap[resultKey] || "詳細な説明はありません。";
+        }
+        
         const contactMsgEl = document.getElementById('contactMessage');
         if (contactMsgEl) {
             contactMsgEl.classList.add('hidden');
@@ -231,12 +277,17 @@ const questionnaire = new Questionnaire();
 
 window.handleAnswer = function(answer, questionId) {
     const currentQuestion = questionnaire.questions.find(q => q.id === questionId);
-    if (!currentQuestion) return;
+    if (!currentQuestion) {
+        console.error("handleAnswer: Question not found for ID:", questionId);
+        return;
+    }
 
     if (questionId === 'taxInfo' && answer === 'back') {
         const targetIndex = questionnaire.questions.findIndex(q => q.id === currentQuestion.next);
         if (targetIndex !== -1) {
             questionnaire.showQuestion(targetIndex);
+        } else {
+            console.error("handleAnswer: Next question ID not found for taxInfo back:", currentQuestion.next);
         }
         return;
     }
@@ -247,7 +298,7 @@ window.handleAnswer = function(answer, questionId) {
     if (answer === 'yes' && currentQuestion.yes) nextQuestionId = currentQuestion.yes;
     else if (answer === 'no' && currentQuestion.no) nextQuestionId = currentQuestion.no;
     else if (answer === 'unknown' && currentQuestion.unknown) nextQuestionId = currentQuestion.unknown;
-    else if (currentQuestion.next) nextQuestionId = currentQuestion.next;
+    else if (currentQuestion.next) nextQuestionId = currentQuestion.next; // income, savings などはこちら
 
     if (nextQuestionId === 'result') {
         questionnaire.determineResult();
@@ -256,12 +307,13 @@ window.handleAnswer = function(answer, questionId) {
         if (nextIndex !== -1) {
             questionnaire.showQuestion(nextIndex);
         } else {
-            console.error("Next question ID not found:", nextQuestionId);
-            questionnaire.determineResult();
+            console.error("handleAnswer: Next question ID not found in questions array:", nextQuestionId);
+            questionnaire.determineResult(); // フォールバック
         }
     } else {
-        console.warn("No specific next question or result determined for:", questionId, "with answer:", answer);
-        questionnaire.determineResult();
+        // nextQuestionId が決定されなかった場合（通常は分岐条件の漏れ）
+        console.warn("handleAnswer: No specific next question or result determined for question ID:", questionId, "with answer:", answer);
+        questionnaire.determineResult(); // 安全策として結果表示
     }
 }
 
@@ -269,187 +321,21 @@ window.goToTop = function() {
     window.location.reload();
 }
 
-// ★追加: 市区町村への問い合わせメッセージを表示する関数
 window.showContactMessage = function() {
     const contactMessageDiv = document.getElementById('contactMessage');
     if (contactMessageDiv) {
         contactMessageDiv.textContent = 'お住まいの市区町村の窓口へ直接お問い合わせください。このツールはあくまで簡易判定です。';
         contactMessageDiv.classList.remove('hidden');
+    } else {
+        console.error("#contactMessage element not found.");
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    questionnaire.showQuestion(0);
+    // questionnaireインスタンスが正しく生成されていることを確認
+    if (questionnaire && typeof questionnaire.showQuestion === 'function') {
+        questionnaire.showQuestion(0);
+    } else {
+        console.error("Questionnaire object not initialized correctly.");
+    }
 });
-```html
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>限額判定くん｜介護保険負担限度額認定の簡易チェックツール</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
-    
-    <link rel="apple-touch-icon" href="[https://placehold.co/180x180/3b82f6/ffffff?text=判定くん](https://placehold.co/180x180/3b82f6/ffffff?text=判定くん)" sizes="180x180">
-    <link rel="icon" href="[https://placehold.co/512x512/3b82f6/ffffff?text=判定くん](https://placehold.co/512x512/3b82f6/ffffff?text=判定くん)" sizes="512x512">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffffff">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f0f4f8; /* bg-slate-100 */
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            padding: 2rem 1rem; /* 上下左右にパディングを追加 */
-            box-sizing: border-box;
-        }
-        .container {
-            background-color: #ffffff; /* bg-white */
-            padding: 1.5rem; /* p-6 */
-            border-radius: 0.75rem; /* rounded-xl */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-xl */
-            width: 100%;
-            max-width: 600px;
-        }
-        @media (min-width: 640px) { /* sm breakpoint */
-            .container {
-                padding: 2rem; /* p-8 on larger screens */
-            }
-        }
-        .question p, #resultArea h2 { /* #resultText h2 から #resultArea h2 に変更 */
-            color: #1e293b; /* text-slate-800 */
-            font-weight: 600; /* font-semibold */
-        }
-        .option {
-            background-color: #3b82f6; /* bg-blue-500 */
-            color: white;
-            padding: 0.75rem 1.5rem; /* py-3 px-6 */
-            border-radius: 0.5rem; /* rounded-lg */
-            cursor: pointer;
-            transition: background-color 0.2s ease-in-out;
-            text-align: center;
-            font-weight: 500; /* font-medium */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
-        }
-        .option:hover {
-            background-color: #2563eb; /* bg-blue-600 */
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-        }
-        .tax-info p {
-            margin-bottom: 0.5rem; /* mb-2 */
-            color: #475569; /* text-slate-600 */
-        }
-        .hidden {
-            display: none;
-        }
-        #resultArea { /* スタイル調整 */
-            border: 1px solid #e2e8f0; /* border-slate-200 */
-            padding: 1.5rem; /* p-6 */
-            border-radius: 0.5rem; /* rounded-lg */
-            background-color: #f8fafc; /* bg-slate-50 */
-        }
-        #resultExplanation { /* <p>タグに直接スタイルを適用するので、クラスは不要な場合も */
-            color: #334155; /* text-slate-700 */
-            line-height: 1.6; /* leading-relaxed */
-            font-size: 0.875rem; /* text-sm */
-        }
-        #resultText { /* 結果テキストのスタイル */
-            font-size: 1.25rem; /* text-xl */
-            font-weight: 600; /* font-semibold */
-            color: #1e293b; /* text-slate-800 */
-            margin-bottom: 0.5rem; /* mb-2 */
-        }
-        button.action-button { /* 共通ボタンスタイル */
-            color: white;
-            font-bold: 600; /* font-bold */
-            padding: 0.625rem 1rem; /* py-2.5 px-4 */
-            border-radius: 0.375rem; /* rounded-md */
-            transition: background-color 0.15s ease-in-out;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
-            width: 100%; /* 幅を100%に */
-        }
-        button.action-button:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-        }
-        /* ★追加: 免責事項のスタイル */
-        .disclaimer {
-            background-color: #fefce8; /* bg-yellow-50 */
-            border: 1px solid #fef08a; /* border-yellow-200 */
-            color: #ca8a04; /* text-yellow-700 */
-            padding: 0.75rem; /* p-3 */
-            border-radius: 0.375rem; /* rounded-md */
-            font-size: 0.875rem; /* text-sm */
-            margin-bottom: 1.5rem; /* mb-6 */
-        }
-        .disclaimer p {
-            margin-bottom: 0.25rem; /* mb-1 */
-        }
-        /* ★追加: 結果エリアのボタンスタイル */
-        .result-buttons {
-            margin-top: 1.5rem; /* mt-6 */
-            display: flex;
-            flex-direction: column; /* ボタンを縦に並べる */
-            gap: 0.75rem; /* space-y-3相当 */
-        }
-        @media (min-width: 640px) { /* sm breakpoint */
-            .result-buttons {
-                flex-direction: row; /* 横並びに戻す */
-                gap: 1rem; /* space-x-4相当 */
-            }
-            button.action-button {
-                 width: auto; /* 幅を自動に */
-            }
-        }
-        /* ★追加: 問い合わせメッセージのスタイル */
-        #contactMessage {
-            margin-top: 1rem; /* mt-4 */
-            padding: 0.75rem; /* p-3 */
-            background-color: #eff6ff; /* bg-blue-50 */
-            color: #1d4ed8; /* text-blue-700 */
-            border: 1px solid #bfdbfe; /* border-blue-200 */
-            border-radius: 0.375rem; /* rounded-md */
-            font-size: 0.875rem; /* text-sm */
-        }
-    </style>
-    <link href="[https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap](https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap)" rel="stylesheet">
-</head>
-<body>
-    <noscript>
-        <div style="padding: 1em; background-color: #ffdddd; color: #900; text-align: center; border: 1px solid #900; margin: 1em;">
-            このツールを利用するにはJavaScriptを有効にしてください。
-        </div>
-    </noscript>
-
-    <div class="container">
-        <header class="text-center mb-6">
-            <h1 class="text-3xl font-bold text-slate-700">限額判定くん</h1>
-            </header>
-
-        <div class="disclaimer">
-            <p><strong>【ご確認ください】</strong></p>
-            <p>このツールは介護保険の負担限度額認定に関する簡易的な判定を行うものです。</p>
-            <p>最終的な認定結果や詳細については、必ずお住まいの市区町村の担当窓口にご確認ください。</p>
-            <p>本ツールの利用により生じたいかなる損害についても、作成者は一切の責任を負いかねますので、あらかじめご了承ください。</p>
-        </div>
-
-        <div id="questionArea">
-            </div>
-
-        <div id="resultArea" class="hidden">
-            <h2 class="text-2xl font-bold text-slate-800 mb-3">判定結果</h2>
-            <p id="resultText"></p>
-            <p id="resultExplanation" class="mt-2"></p>
-            
-            <div class="result-buttons">
-                <button onclick="goToTop()" class="action-button bg-gray-500 hover:bg-gray-600 back-to-top">最初の質問に戻る</button>
-                <button onclick="showContactMessage()" class="action-button bg-blue-500 hover:bg-blue-600 contact-button">市区町村窓口について</button>
-            </div>
-            <div id="contactMessage" class="hidden">
-                </div>
-        </div>
-    </div>
-    </body>
-</html>
