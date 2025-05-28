@@ -2,18 +2,18 @@ class Questionnaire {
     constructor() {
         this.questions = [
             {
-                text: "対象者は市民税非課税世帯ですか？",
+                text: "あなたは市民税非課税世帯ですか？",
                 type: "yesno_unknown",
                 id: "taxStatus",
                 yes: "pensionStatus",
-                no: "income",
+                no: "result_not_eligible",
                 unknown: "taxInfo"
             },
             {
                 text: "老齢福祉年金を受給していますか？",
                 id: "pensionStatus",
                 type: "yesno",
-                yes: "result_first",  // 結果に直接ジャンプ
+                yes: "result_first",
                 no: "income"
             },
             {
@@ -21,36 +21,42 @@ class Questionnaire {
                 id: "income",
                 type: "income",
                 thresholds: [80, 120],
-                next: "savings"
+                next: "hasSpouse"
             },
             {
-                text: "預貯金の合計金額はいくらですか？",
+                text: "配偶者はいますか？",
+                id: "hasSpouse",
+                type: "yesno",
+                yes: "savingsSpouse",
+                no: "savings"
+            },
+            {
+                text: "預貯金の合計金額はいくらですか？（本人のみ）",
                 id: "savings",
                 type: "savings",
-                thresholds: [500, 550, 650],
+                options: [
+                    { value: "500", label: "500万円以下" },
+                    { value: "550", label: "550万円以下" },
+                    { value: "650", label: "650万円以下" }
+                ],
                 next: "result"
             },
             {
-                text: "住民税の非課税要件についてご説明します。以下のいずれかに該当する場合は非課税となります：",
+                text: "預貯金の合計金額はいくらですか？（本人＋配偶者）",
+                id: "savingsSpouse",
+                type: "savings",
+                options: [
+                    { value: "1500", label: "(配偶者合計)1500万円以下" },
+                    { value: "1550", label: "(配偶者合計)1550万円以下" },
+                    { value: "1650", label: "(配偶者合計)1650万円以下" }
+                ],
+                next: "result"
+            },
+            {
+                text: "住民税の非課税要件についてご説明します。",
                 id: "taxInfo",
                 type: "taxInfo",
-                info: [
-                    "1. 均等割と所得割がともに非課税とされる方",
-                    "（1）生活保護法の規定による生活扶助を受けている方",
-                    "（2）障害者、未成年者、寡婦又はひとり親で前年の合計所得金額が135万円以下の方",
-                    "",
-                    "2. 均等割が非課税とされる方",
-                    "均等割のみを課される方のうち、前年の合計所得金額が一定の基準に伴い市町村の条例で定める金額以下の方",
-                    "一定の基準＝(3)×本人、同一生計配偶者及び扶養親族の合計数+10万円+(4)",
-                    "生活保護基準の級地区分の1級地の場合…(3)＝35万円、(4)＝21.0万円",
-                    "生活保護基準の級地区分の2級地の場合…(3)＝31.5万円、(4)＝18.9万円",
-                    "生活保護基準の級地区分の3級地の場合…(3)＝28万円、(4)＝16.8万円",
-                    "",
-                    "3. 所得割が非課税とされる方",
-                    "所得割を課される方のうち、前年の総所得金額等の合計額が以下の金額以下の方",
-                    "35万円×本人、同一生計配偶者及び扶養親族の合計数+10万円+32万円",
-                    "*（4）及び（5）の金額は、同一生計配偶者又は扶養親族を有する場合に加算する金額です。"
-                ],
+                info: [ /* ...既存の説明文... */ ],
                 next: "taxStatus"
             }
         ];
@@ -91,11 +97,9 @@ class Questionnaire {
                     <div class="option" onclick="handleAnswer('120+', '${question.id}')">120万円超</div>
                 `;
             case 'savings':
-                return `
-                    <div class="option" onclick="handleAnswer('500', '${question.id}')">500万円以下</div>
-                    <div class="option" onclick="handleAnswer('550', '${question.id}')">550万円以下</div>
-                    <div class="option" onclick="handleAnswer('650', '${question.id}')">650万円以下</div>
-                `;
+                return question.options.map(opt =>
+                    `<div class="option" onclick="handleAnswer('${opt.value}', '${question.id}')">${opt.label}</div>`
+                ).join('');
             case 'taxInfo':
                 return `
                     <div class="tax-info">
@@ -107,28 +111,38 @@ class Questionnaire {
     }
 
     determineResult() {
-        const answers = this.answers;
+        const { taxStatus, pensionStatus, income, hasSpouse, savings, savingsSpouse } = this.answers;
         let result = '';
 
-        if (answers['taxStatus'] === 'yes') {
-            if (answers['pensionStatus'] === 'yes') {
-                result = 'first';
-            } else {
-                const income = answers['income'];
-                const savings = parseInt(answers['savings']);
+        if (taxStatus !== 'yes') {
+            result = 'not_eligible';
+        } else if (pensionStatus === 'yes') {
+            result = 'first';
+        } else {
+            const incomeValue = income;
+            const savingsValue = parseInt(hasSpouse === 'yes' ? savingsSpouse : savings);
 
-                if (income === '80' && savings <= 650) {
+            if (incomeValue === '80') {
+                if ((hasSpouse === 'yes' && savingsValue <= 1650) || (hasSpouse === 'no' && savingsValue <= 650)) {
                     result = 'second';
-                } else if (income === '120' && savings <= 550) {
+                } else {
+                    result = 'not_eligible';
+                }
+            } else if (incomeValue === '120') {
+                if ((hasSpouse === 'yes' && savingsValue <= 1550) || (hasSpouse === 'no' && savingsValue <= 550)) {
                     result = 'third_1';
-                } else if (income === '120+' && savings <= 500) {
+                } else {
+                    result = 'not_eligible';
+                }
+            } else if (incomeValue === '120+') {
+                if ((hasSpouse === 'yes' && savingsValue <= 1500) || (hasSpouse === 'no' && savingsValue <= 500)) {
                     result = 'third_2';
                 } else {
                     result = 'not_eligible';
                 }
+            } else {
+                result = 'not_eligible';
             }
-        } else {
-            result = 'not_eligible';
         }
 
         this.showResult(result);
@@ -149,20 +163,19 @@ class Questionnaire {
                 break;
             case 'second':
                 text = 'あなたは第2段階に該当する可能性があります';
-                explanation = '年間収入80万円以下で預貯金650万円以下の非課税世帯の場合です。';
+                explanation = '収入80万円以下で、預貯金が条件を満たす非課税世帯の場合です。';
                 break;
             case 'third_1':
                 text = 'あなたは第3段階①に該当する可能性があります';
-                explanation = '年間収入80万円超120万円以下で預貯金550万円以下の非課税世帯の場合です。';
+                explanation = '収入80万円超120万円以下で、預貯金が条件を満たす非課税世帯の場合です。';
                 break;
             case 'third_2':
                 text = 'あなたは第3段階②に該当する可能性があります';
-                explanation = '年間収入120万円超で預貯金500万円以下の非課税世帯の場合です。';
+                explanation = '収入120万円超で、預貯金が条件を満たす非課税世帯の場合です。';
                 break;
-            case 'not_eligible':
+            default:
                 text = '負担限度額認定の対象外の可能性があります';
                 explanation = '市民税課税世帯または条件を満たさない場合です。';
-                break;
         }
 
         resultText.textContent = text;
@@ -193,12 +206,6 @@ function handleAnswer(answer, questionId) {
     else if (answer === 'no') nextId = question.no;
     else if (answer === 'unknown') nextId = question.unknown;
     else if (question.next) nextId = question.next;
-
-    if (nextId && nextId.startsWith('result_')) {
-        const resultKey = nextId.replace('result_', '');
-        questionnaire.showResult(resultKey);
-        return;
-    }
 
     if (nextId === 'result') {
         questionnaire.determineResult();
