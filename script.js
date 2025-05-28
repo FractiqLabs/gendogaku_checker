@@ -114,14 +114,14 @@ class Questionnaire {
             if (answers['pensionStatus'] === 'yes') {
                 result = 'first';
             } else {
-                const income = parseInt(answers['income']);
+                const income = answers['income'];
                 const savings = parseInt(answers['savings']);
 
-                if (income <= 80 && savings <= 650) {
+                if (income === '80' && savings <= 650) {
                     result = 'second';
-                } else if (income <= 120 && savings <= 550) {
+                } else if (income === '120' && savings <= 550) {
                     result = 'third_1';
-                } else if (income > 120 && savings <= 500) {
+                } else if (income === '120+' && savings <= 500) {
                     result = 'third_2';
                 } else {
                     result = 'not_eligible';
@@ -194,14 +194,12 @@ function handleAnswer(answer, questionId) {
     else if (answer === 'unknown') nextId = question.unknown;
     else if (question.next) nextId = question.next;
 
-    // 結果IDなら即表示
     if (nextId && nextId.startsWith('result_')) {
         const resultKey = nextId.replace('result_', '');
         questionnaire.showResult(resultKey);
         return;
     }
 
-    // 通常の質問に遷移
     if (nextId === 'result') {
         questionnaire.determineResult();
         return;
