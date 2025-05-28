@@ -68,16 +68,13 @@ class Questionnaire {
     }
 
     showQuestion(index) {
-        // questions 配列の範囲外のインデックスが指定された場合のエラーハンドリング
         if (index < 0 || index >= this.questions.length) {
             console.error("Invalid question index:", index);
-            // 最初の質問を表示するなどのフォールバック処理
             this.currentQuestionIndex = 0;
             index = 0;
-            // return; // ここで処理を中断すると何も表示されなくなる可能性
         }
 
-        const question = this.questions[index]; // questions[index] を直接使用
+        const question = this.questions[index];
         if (!question) {
             console.error("Question not found for index:", index);
             return;
@@ -98,7 +95,7 @@ class Questionnaire {
                 <button onclick="goToTop()" class="mt-6 w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out">最初の質問に戻る</button>
             </div>
         `;
-        // 新しい質問が表示されるたびに、結果エリアと連絡先メッセージを隠す
+        // 結果エリアと連絡先メッセージを隠す
         const resultAreaEl = document.getElementById('resultArea');
         if (resultAreaEl) {
             resultAreaEl.classList.add('hidden');
@@ -160,27 +157,19 @@ class Questionnaire {
             default:
                 optionsHTML = "<p>オプションタイプエラー</p>";
         }
-        // 各オプションにスタイルを適用するためのラッパーを追加
-        // この部分は意図通りに動作しているか確認が必要。div要素が正しく閉じられているかなど。
-        // 元のコードでは、 </div の後が > で終わるべきところで " > となっていたり、
-        // class="option" がない場合に </div> が追加されたりする可能性があった。
-        // より安全な方法としては、各選択肢を個別のdivで囲むことを推奨。
-        // 例: return question.options.map(opt => `<div class="option" onclick="...">${opt.text}</div>`).join('');
-        // 現在の optionsHTML の生成方法だと、最後の </div> が不足する可能性がある。
-        // 修正案：各選択肢を完全なHTML文字列として生成する。
+
         let completeOptionsHTML = '';
-        const optionsArray = optionsHTML.match(/<div class="option".*?<\/div>/g);
+        const optionsArray = optionsHTML.match(/<div class="option".*?<\/div>/gs);
         if (optionsArray) {
             completeOptionsHTML = optionsArray.join('');
-        } else if (question.type === 'taxInfo') { // taxInfoの場合は特殊なので別途処理
+        } else if (question.type === 'taxInfo') {
              const taxInfoContent = question.info.filter(item => item.trim()).map(item => `<p class="mb-1">${item}</p>`).join('');
              const backButton = `<div class="option mt-4" onclick="handleAnswer('back', '${question.id}')">確認したので戻る</div>`;
              completeOptionsHTML = `<div class="tax-info bg-gray-100 p-4 rounded-md text-sm">${taxInfoContent}</div>${backButton}`;
         } else {
-            completeOptionsHTML = optionsHTML; // エラーケースやその他のタイプ
+            completeOptionsHTML = optionsHTML;
         }
         return completeOptionsHTML;
-
     }
 
     determineResult() {
@@ -205,70 +194,95 @@ class Questionnaire {
                 const savingsSpouseAmount = savingsSpouseValue === 'over' ? Infinity : parseInt(savingsSpouseValue);
 
                 if (income === '80') {
-                    if (savingsSpouseAmount <= 1650) { this.showResult('second'); return; }
-                } else if (income === '120') {
-                    if (savingsSpouseAmount <= 1550) { this.showResult('third_1'); return; }
-                } else if (income === '120+') {
-                    if (savingsSpouseAmount <= 1500) { this.showResult('third_2'); return; }
+                    if (savingsSpouseAmount <= 1500) {
+                        this.showResult('first');
+                    } else if (savingsSpouseAmount <= 1550) {
+                        this.showResult('second');
+                    } else if (savingsSpouseAmount <= 1650) {
+                        this.showResult('third');
+                    } else {
+                        this.showResult('fourth');
+                    }
+                } else if (income === '120' || income === '120+') {
+                    if (savingsSpouseAmount <= 1500) {
+                        this.showResult('second');
+                    } else if (savingsSpouseAmount <= 1550) {
+                        this.showResult('third');
+                    } else if (savingsSpouseAmount <= 1650) {
+                        this.showResult('fourth');
+                    } else {
+                        this.showResult('fourth');
+                    }
+                } else {
+                    this.showResult('fourth');
                 }
             } else {
-                const savingsSelfValue = a['savings'];
-                if (savingsSelfValue === 'over_650') {
-                    this.showResult('not_eligible');
-                    return;
-                }
-                const savingsAmount = parseInt(savingsSelfValue);
+                let savingsValue = a['savings'];
+                const savingsAmount = savingsValue === 'over_650' ? Infinity : parseInt(savingsValue);
+
                 if (income === '80') {
-                    if (savingsAmount <= 650) { this.showResult('second'); return; }
-                } else if (income === '120') {
-                    if (savingsAmount <= 550) { this.showResult('third_1'); return; }
-                } else if (income === '120+') {
-                    if (savingsAmount <= 500) { this.showResult('third_2'); return; }
+                    if (savingsAmount <= 500) {
+                        this.showResult('first');
+                    } else if (savingsAmount <= 550) {
+                        this.showResult('second');
+                    } else if (savingsAmount <= 650) {
+                        this.showResult('third');
+                    } else {
+                        this.showResult('fourth');
+                    }
+                } else if (income === '120' || income === '120+') {
+                    if (savingsAmount <= 500) {
+                        this.showResult('second');
+                    } else if (savingsAmount <= 550) {
+                        this.showResult('third');
+                    } else if (savingsAmount <= 650) {
+                        this.showResult('fourth');
+                    } else {
+                        this.showResult('fourth');
+                    }
+                } else {
+                    this.showResult('fourth');
                 }
             }
+        } else {
+            this.showResult('unknown');
         }
-        this.showResult('not_eligible');
     }
 
-    showResult(resultKey) {
-        const resultTextMap = {
-            first: 'あなたは第1段階に該当する可能性があります。',
-            second: 'あなたは第2段階に該当する可能性があります。',
-            third_1: 'あなたは第3段階①に該当する可能性があります。',
-            third_2: 'あなたは第3段階②に該当する可能性があります。',
-            not_eligible: '負担限度額認定の対象外の可能性があります。'
-        };
+    showResult(rank) {
+        const resultArea = document.getElementById('resultArea');
+        const questionArea = document.getElementById('questionArea');
+        const contactMessage = document.getElementById('contactMessage');
+        if (!resultArea || !questionArea || !contactMessage) {
+            console.error("結果表示領域が見つかりません。");
+            return;
+        }
+        questionArea.classList.add('hidden');
+        resultArea.classList.remove('hidden');
 
-        const resultExplanationMap = {
-            first: '利用者負担段階：第1段階<br>対象：生活保護等受給者、老齢福祉年金受給者で世帯全員が市民税非課税の方',
-            second: '利用者負担段階：第2段階<br>対象：世帯全員が市民税非課税で、本人の合計所得金額と課税年金収入額の合計が80万円以下の方<br>（預貯金額等が単身で650万円以下、夫婦で1,650万円以下）',
-            third_1: '利用者負担段階：第3段階①<br>対象：世帯全員が市民税非課税で、本人の合計所得金額と課税年金収入額の合計が80万円超120万円以下の方<br>（預貯金額等が単身で550万円以下、夫婦で1,550万円以下）',
-            third_2: '利用者負担段階：第3段階②<br>対象：世帯全員が市民税非課税で、本人の合計所得金額と課税年金収入額の合計が120万円超の方<br>（預貯金額等が単身で500万円以下、夫婦で1,500万円以下）',
-            not_eligible: '入力された情報に基づくと、負担限度額認定の対象外である可能性が高いです。詳細は市区町村の窓口にご確認ください。'
+        const rankTexts = {
+            first: "第1段階の負担限度額（最も軽い）",
+            second: "第2段階の負担限度額",
+            third: "第3段階の負担限度額",
+            fourth: "第4段階の負担限度額（最も重い）",
+            not_eligible: "非該当（市民税課税世帯）",
+            unknown: "判定不能。お問い合わせください。"
         };
-        
-        const questionAreaEl = document.getElementById('questionArea');
-        if (questionAreaEl) {
-            questionAreaEl.classList.add('hidden');
-        }
-        const resultAreaEl = document.getElementById('resultArea');
-        if (resultAreaEl) {
-            resultAreaEl.classList.remove('hidden');
-        }
-        
-        const resultTextEl = document.getElementById('resultText');
-        if (resultTextEl) {
-            resultTextEl.textContent = resultTextMap[resultKey] || "結果不明";
-        }
-        const resultExplanationEl = document.getElementById('resultExplanation');
-        if (resultExplanationEl) {
-            resultExplanationEl.innerHTML = resultExplanationMap[resultKey] || "詳細な説明はありません。";
-        }
-        
-        const contactMsgEl = document.getElementById('contactMessage');
-        if (contactMsgEl) {
-            contactMsgEl.classList.add('hidden');
-            contactMsgEl.textContent = '';
+        resultArea.innerHTML = `
+            <div class="result p-6 bg-white rounded-lg shadow-md">
+                <h2 class="text-2xl font-bold mb-4">負担限度額の判定結果</h2>
+                <p class="text-lg mb-4">${rankTexts[rank] || "結果不明"}</p>
+                <button onclick="goToTop()" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-150 ease-in-out">最初の質問に戻る</button>
+            </div>
+        `;
+
+        // 必要に応じて連絡先メッセージを表示
+        if (rank === 'unknown' || rank === 'not_eligible') {
+            contactMessage.textContent = "ご不明な点はケアマネジャーにお問い合わせください。";
+            contactMessage.classList.remove('hidden');
+        } else {
+            contactMessage.classList.add('hidden');
+            contactMessage.textContent = "";
         }
     }
 }
@@ -283,6 +297,7 @@ window.handleAnswer = function(answer, questionId) {
     }
 
     if (questionId === 'taxInfo' && answer === 'back') {
+        // 「非課税要件説明」から戻るボタン押下時
         const targetIndex = questionnaire.questions.findIndex(q => q.id === currentQuestion.next);
         if (targetIndex !== -1) {
             questionnaire.showQuestion(targetIndex);
@@ -292,50 +307,42 @@ window.handleAnswer = function(answer, questionId) {
         return;
     }
 
+    // 回答を保存
     questionnaire.answers[questionId] = answer;
 
+    // 次の質問ID決定
     let nextQuestionId = null;
     if (answer === 'yes' && currentQuestion.yes) nextQuestionId = currentQuestion.yes;
     else if (answer === 'no' && currentQuestion.no) nextQuestionId = currentQuestion.no;
     else if (answer === 'unknown' && currentQuestion.unknown) nextQuestionId = currentQuestion.unknown;
-    else if (currentQuestion.next) nextQuestionId = currentQuestion.next; // income, savings などはこちら
+    else if (currentQuestion.next) nextQuestionId = currentQuestion.next;
 
     if (nextQuestionId === 'result') {
         questionnaire.determineResult();
-    } else if (nextQuestionId) {
+    } else {
         const nextIndex = questionnaire.questions.findIndex(q => q.id === nextQuestionId);
         if (nextIndex !== -1) {
             questionnaire.showQuestion(nextIndex);
         } else {
-            console.error("handleAnswer: Next question ID not found in questions array:", nextQuestionId);
-            questionnaire.determineResult(); // フォールバック
+            console.error("handleAnswer: Next question ID not found:", nextQuestionId);
         }
-    } else {
-        // nextQuestionId が決定されなかった場合（通常は分岐条件の漏れ）
-        console.warn("handleAnswer: No specific next question or result determined for question ID:", questionId, "with answer:", answer);
-        questionnaire.determineResult(); // 安全策として結果表示
+    }
+};
+
+function goToTop() {
+    questionnaire.showQuestion(0);
+    const resultAreaEl = document.getElementById('resultArea');
+    if (resultAreaEl) resultAreaEl.classList.add('hidden');
+    const questionAreaEl = document.getElementById('questionArea');
+    if (questionAreaEl) questionAreaEl.classList.remove('hidden');
+    const contactMsgEl = document.getElementById('contactMessage');
+    if (contactMsgEl) {
+        contactMsgEl.classList.add('hidden');
+        contactMsgEl.textContent = '';
     }
 }
 
-window.goToTop = function() {
-    window.location.reload();
-}
-
-window.showContactMessage = function() {
-    const contactMessageDiv = document.getElementById('contactMessage');
-    if (contactMessageDiv) {
-        contactMessageDiv.textContent = 'お住まいの市区町村の窓口へ直接お問い合わせください。このツールはあくまで簡易判定です。';
-        contactMessageDiv.classList.remove('hidden');
-    } else {
-        console.error("#contactMessage element not found.");
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    // questionnaireインスタンスが正しく生成されていることを確認
-    if (questionnaire && typeof questionnaire.showQuestion === 'function') {
-        questionnaire.showQuestion(0);
-    } else {
-        console.error("Questionnaire object not initialized correctly.");
-    }
-});
+// 初期表示
+window.onload = () => {
+    questionnaire.showQuestion(0);
+};
