@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>限額判定くん</title>
+    <title>限額判定くん｜介護保険負担限度額認定の簡易チェックツール</title>
     <link rel="stylesheet" href="style.css">
 
     <!-- モバイルアプリ対応：iPhoneアプリアイコン -->
@@ -15,13 +15,19 @@
     <link rel="manifest" href="manifest.json"> <!-- PWA対応（任意） -->
 </head>
 <body>
+    <noscript>
+        <div style="padding: 1em; background-color: #ffdddd; color: #900;">
+            このツールを利用するにはJavaScriptを有効にしてください。
+        </div>
+    </noscript>
+
     <div class="container">
         <h1>限額判定くん</h1>
 
         <div class="disclaimer">
             <p>簡易判定です。詳細は市区町村にご確認ください。</p>
-            <p>本ツールは簡易的な判定を目的としており、最終的な課税・非課税の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
-            <p>本ツールのご利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
+            <p>本ツールは簡易的な判定を目的としており、最終的な認定可否の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
+            <p>また本ツールの利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
         </div>
 
         <div id="questionArea">
@@ -34,7 +40,9 @@
             <p id="resultExplanation"></p>
             <div class="result-buttons">
                 <button onclick="goToTop()" class="back-to-top">TOP画面に戻る</button>
-                <button onclick="window.location.href='https://www.city.example.jp'" class="contact-button">市区町村に相談する</button>
+                <button onclick="alert('お住まいの市区町村の窓口へお問い合わせください。')" class="contact-button">
+                    市区町村窓口に問い合わせる
+                </button>
             </div>
         </div>
     </div>
