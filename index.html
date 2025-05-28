@@ -1,52 +1,107 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>限額判定くん｜介護保険負担限度額認定の簡易チェックツール</title>
-    <link rel="stylesheet" href="style.css">
-
-    <!-- モバイルアプリ対応：iPhoneアプリアイコン -->
-    <link rel="apple-touch-icon" href="apple-touch-icon.png" sizes="180x180">
-    <link rel="icon" href="icon.png" sizes="512x512">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffffff">
-    <link rel="manifest" href="manifest.json"> <!-- PWA対応（任意） -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title><!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>限額判定くん｜介護保険負担限度額認定の簡易チェックツール</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <noscript>
-        <div style="padding: 1em; background-color: #ffdddd; color: #900;">
-            このツールを利用するにはJavaScriptを有効にしてください。
-        </div>
-    </noscript>
+  <div class="container">
+    <header>
+      <h1>限額判定くん</h1>
+      <p>質問に答えることで、負担限度額認定の段階を判定します。</p>
+      <p>本ツールは簡易的な判定を目的としており、最終的な認定可否の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
+      <p>また本ツールの利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
+    </header>
 
-    <div class="container">
-        <h1>限額判定くん</h1>
+    <main>
+      <section id="questionArea">
+        <!-- 質問がここに表示されます -->
+      </section>
 
-        <div class="disclaimer">
-            <p>簡易判定です。詳細は市区町村にご確認ください。</p>
-            <p>本ツールは簡易的な判定を目的としており、最終的な認定可否の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
-            <p>また本ツールの利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
-        </div>
+      <section id="resultArea" class="hidden">
+        <h2 id="resultText"></h2>
+        <p id="resultExplanation"></p>
+        <button onclick="goToTop()">TOP画面に戻る</button>
+      </section>
+    </main>
 
-        <div id="questionArea">
-            <!-- JavaScriptで質問がここに表示されます -->
-        </div>
+    <footer>
+      <p>&copy; 2025 負担限度額チェックツール</p>
+    </footer>
+  </div>
 
-        <div id="resultArea" class="hidden">
-            <h2>判定結果</h2>
-            <p id="resultText"></p>
-            <p id="resultExplanation"></p>
-            <div class="result-buttons">
-                <button onclick="goToTop()" class="back-to-top">TOP画面に戻る</button>
-                <button onclick="alert('お住まいの市区町村の窓口へお問い合わせください。')" class="contact-button">
-                    市区町村窓口に問い合わせる
-                </button>
-            </div>
-        </div>
-    </div>
+  <script src="script.js"></script>
+</body>
+</html>
+</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>負担限度額認定チェック</h1>
+      <p>質問に答えることで、負担限度額認定の段階を判定します。</p>
+    </header>
 
-    <script src="script.js"></script>
+    <main>
+      <section id="questionArea">
+        <!-- 質問がここに表示されます -->
+      </section>
+
+      <section id="resultArea" class="hidden">
+        <h2 id="resultText"></h2>
+        <p id="resultExplanation"></p>
+        <button onclick="goToTop()">TOP画面に戻る</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 負担限度額チェックツール</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>負担限度額認定チェック</h1>
+      <p>質問に答えることで、負担限度額認定の段階を判定します。</p>
+    </header>
+
+    <main>
+      <section id="questionArea">
+        <!-- 質問がここに表示されます -->
+      </section>
+
+      <section id="resultArea" class="hidden">
+        <h2 id="resultText"></h2>
+        <p id="resultExplanation"></p>
+        <button onclick="goToTop()">TOP画面に戻る</button>
+      </section>
+    </main>
+
+    <footer>
+      <p>&copy; 2025 負担限度額チェックツール</p>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
