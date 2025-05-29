@@ -6,7 +6,7 @@ class Questionnaire {
                 type: "yesno_unknown",
                 id: "taxStatus",
                 yes: "pensionStatus",
-                no: "ineligible",
+                no: "result_not_eligible",
                 unknown: "taxInfo"
             },
             {
@@ -97,6 +97,7 @@ class Questionnaire {
                     <div class="option" onclick="handleAnswer('500', '${question.id}')">500万円以下</div>
                     <div class="option" onclick="handleAnswer('550', '${question.id}')">550万円以下</div>
                     <div class="option" onclick="handleAnswer('650', '${question.id}')">650万円以下</div>
+                    <div class="option" onclick="handleAnswer('over650', '${question.id}')">650万円超</div>
                 `;
             case 'taxInfo':
                 return `
@@ -135,6 +136,11 @@ class Questionnaire {
                 this.showResult('third_1');
                 return;
             }
+            // 年収120万円超の場合：預貯金1500万円以下なら第3段階②
+            if (income === '120+' && savingsAnswer === '1500') {
+                this.showResult('third_2');
+                return;
+            }
         } else {
             const savingsAnswer = a['savings_single'];
             // 年収80万円以下の場合：預貯金650万円以下なら第2段階
@@ -143,12 +149,12 @@ class Questionnaire {
                 return;
             } 
             // 年収80万円超120万円以下の場合：預貯金550万円以下なら第3段階①
-            else if (income === '120' && (savingsAnswer === '500' || savingsAnswer === '550')) {
+            if (income === '120' && (savingsAnswer === '500' || savingsAnswer === '550')) {
                 this.showResult('third_1');
                 return;
             } 
             // 年収120万円超の場合：預貯金500万円以下なら第3段階②
-            else if (income === '120+' && savingsAnswer === '500') {
+            if (income === '120+' && savingsAnswer === '500') {
                 this.showResult('third_2');
                 return;
             }
