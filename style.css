@@ -1,119 +1,91 @@
-/* ベース設定 */
-* {
-  box-sizing: border-box;
-}
-
+/* 全体の基本スタイル */
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-  background-color: #f0f2f5;
+  font-family: 'Noto Sans JP', sans-serif;
+  background-color: #f7f9fb;
   color: #333;
   line-height: 1.6;
 }
 
-/* メインコンテナ */
+/* 中央に揃えて見やすく */
 .container {
   max-width: 800px;
-  margin: 3rem auto;
-  padding: 2rem;
-  background-color: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
-  animation: fadeIn 0.6s ease-out;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
 
-/* アニメーション */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ヘッダー */
+/* ヘッダー部分 */
 header {
   text-align: center;
   margin-bottom: 2rem;
 }
 
 header h1 {
-  font-size: 2.5rem;
+  font-size: 2.2rem;
+  color: #007acc;
   margin-bottom: 0.5rem;
-  color: #007bff;
 }
 
 header p {
-  color: #555;
   font-size: 1rem;
+  color: #555;
   margin: 0.4rem 0;
 }
 
-/* 質問エリア */
-#questionArea {
-  margin-top: 2rem;
+/* メインエリアの質問と結果 */
+main section {
+  margin-bottom: 2rem;
 }
 
-/* 結果表示エリア */
+/* 質問エリア・結果エリア共通のカードスタイル */
+#questionArea,
 #resultArea {
-  background-color: #e9f5ff;
-  padding: 1.5rem;
+  background-color: #ffffff;
   border-radius: 12px;
-  border-left: 6px solid #007bff;
-  margin-top: 2rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease-in-out;
 }
 
-#resultText {
+/* 非表示にするためのクラス */
+.hidden {
+  display: none;
+}
+
+/* 結果テキスト */
+#resultArea h2 {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #007bff;
+  color: #007acc;
+  margin-bottom: 1rem;
 }
 
 #resultExplanation {
-  margin-top: 0.5rem;
+  font-size: 1rem;
+  color: #444;
 }
 
 /* ボタンスタイル */
 button {
-  display: inline-block;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #007acc;
+  color: white;
   border: none;
-  border-radius: 8px;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 1rem;
-  transition: background-color 0.2s ease;
+  transition: background 0.3s ease;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #005fa3;
 }
 
 /* フッター */
 footer {
   text-align: center;
-  margin-top: 3rem;
   font-size: 0.85rem;
   color: #aaa;
-}
-
-/* 非表示 */
-.hidden {
-  display: none;
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 600px) {
-  .container {
-    margin: 1rem;
-    padding: 1rem;
-  }
-
-  header h1 {
-    font-size: 2rem;
-  }
-
-  button {
-    width: 100%;
-  }
+  margin-top: 2rem;
 }
