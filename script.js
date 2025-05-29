@@ -57,7 +57,7 @@ class Questionnaire {
                     "2人世帯（例：夫婦）：年金収入のみで 合計約211万円以下 であれば非課税の可能性",
                     "※扶養の有無や障害者控除などにより、正確な基準は多少前後します。"
                 ],
-                next: "taxStatus"
+                next: "taxStatus",  // ←ここにカンマ必須
                 prev: "taxStatus"
             }
         ];
@@ -204,17 +204,19 @@ class Questionnaire {
     }
 }
 
-function goToTop() {
-    window.location.reload();
-}
-
 const questionnaire = new Questionnaire();
-questionnaire.showQuestion(0);
 
 function handleAnswer(answer, questionId) {
     if (answer === 'back') {
-        const currentIndex = questionnaire.questions.findIndex(q => q.id === questionId);
-        questionnaire.showQuestion(currentIndex - 1);
+        const currentQuestion = questionnaire.questions.find(q => q.id === questionId);
+        const prevId = currentQuestion.prev;
+        if (prevId) {
+            const prevIndex = questionnaire.questions.findIndex(q => q.id === prevId);
+            questionnaire.showQuestion(prevIndex);
+        } else {
+            const currentIndex = questionnaire.questions.findIndex(q => q.id === questionId);
+            questionnaire.showQuestion(currentIndex - 1);
+        }
         return;
     }
 
@@ -237,3 +239,14 @@ function handleAnswer(answer, questionId) {
         questionnaire.showQuestion(nextIndex);
     }
 }
+
+function goToTop() {
+    questionnaire.answers = {};
+    document.getElementById('resultArea').classList.add('hidden');
+    questionnaire.showQuestion(0);
+}
+
+// 初期表示
+window.onload = () => {
+    questionnaire.showQuestion(0);
+};
