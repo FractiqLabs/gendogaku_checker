@@ -42,7 +42,7 @@ class Questionnaire {
                 next: "result"
             },
             {
-                text: "住民税の非課税要件についてご説明します：",
+                text: "簡易的な見分け方を紹介します。",
                 id: "taxInfo",
                 type: "taxInfo",
                 info: ["住民税非課税の条件を満たすかは市区町村にご確認ください。"],
