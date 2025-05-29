@@ -89,7 +89,8 @@ class Questionnaire {
                 return `
                     <div class="option" onclick="handleAnswer('1500', '${question.id}')">1500万円以下</div>
                     <div class="option" onclick="handleAnswer('1550', '${question.id}')">1550万円以下</div>
-                    <div class="option" onclick="handleAnswer('over1550', '${question.id}')">1550万円超</div>
+                    <div class="option" onclick="handleAnswer('1650', '${question.id}')">1650万円以下</div>
+                    <div class="option" onclick="handleAnswer('over1650', '${question.id}')">1650万円超</div>
                 `;
             case 'savings_single':
                 return `
@@ -124,13 +125,13 @@ class Questionnaire {
 
         if (hasSpouse) {
             const savingsAnswer = a['savings_spouse'];
-            // 年収80万円以下の場合：預貯金1550万円以下なら第2段階
-            if (income === '80' && savingsAnswer !== 'over1550') {
+            // 年収80万円以下の場合：預貯金1650万円以下なら第2段階
+            if (income === '80' && savingsAnswer !== 'over1650') {
                 this.showResult('second');
                 return;
             } 
             // 年収80万円超120万円以下の場合：預貯金1550万円以下なら第3段階①
-            if (income === '120' && savingsAnswer !== 'over1550') {
+            if (income === '120' && (savingsAnswer === '1500' || savingsAnswer === '1550')) {
                 this.showResult('third_1');
                 return;
             }
