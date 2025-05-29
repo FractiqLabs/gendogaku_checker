@@ -1,135 +1,103 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
+/* 全体設定 */
 body {
-    font-family: '游ゴシック', 'Yu Gothic', sans-serif;
-    line-height: 1.6;
-    background-color: #f5f5f5;
-    color: #333;
+  margin: 0;
+  font-family: "Helvetica Neue", sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
+/* コンテナ中央寄せ */
 .container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+/* ヘッダー */
+header {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.disclaimer {
-    text-align: center;
-    color: #666;
-    margin-bottom: 30px;
+header h1 {
+  font-size: 2.5rem;
+  color: #0077cc;
+  margin-bottom: 0.5rem;
 }
 
-.question {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+header p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #666;
 }
 
-.options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
+/* 質問セクション */
+#questionArea {
+  margin-bottom: 2rem;
 }
 
-.option {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    background-color: white;
-}
-
-.option:hover {
-    background-color: #e9ecef;
-}
-
-.tax-info {
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #fff3cd;
-    border-radius: 4px;
-}
-
-.tax-info p {
-    margin: 5px 0;
-    line-height: 1.4;
-}
-
-.hidden {
-    display: none;
-}
-
+/* 結果セクション */
 #resultArea {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
+  background-color: #e8f4ff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: inset 0 0 5px rgba(0, 119, 204, 0.1);
 }
 
 #resultText {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #28a745;
-    margin-bottom: 10px;
+  font-size: 1.5rem;
+  color: #0077cc;
+  margin-bottom: 0.5rem;
 }
 
 #resultExplanation {
-    color: #666;
-    margin-bottom: 20px;
+  font-size: 1rem;
+  color: #333;
 }
 
-.result-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-}
-
+/* ボタン */
 button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-.back-to-top {
-    background-color: #007bff;
-    color: white;
-}
-
-.contact-button {
-    background-color: #28a745;
-    color: white;
+  padding: 0.6rem 1.2rem;
+  font-size: 1rem;
+  color: white;
+  background-color: #0077cc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
 }
 
 button:hover {
-    opacity: 0.9;
+  background-color: #005fa3;
 }
 
-@media (max-width: 480px) {
-    .container {
-        margin: 10px;
-        padding: 10px;
-    }
-    
-    .result-buttons {
-        flex-direction: column;
-    }
+/* フッター */
+footer {
+  margin-top: 3rem;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* 非表示用 */
+.hidden {
+  display: none;
+}
+
+/* モバイル対応 */
+@media (max-width: 600px) {
+  .container {
+    padding: 1rem;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  button {
+    width: 100%;
+  }
 }
