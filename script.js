@@ -42,24 +42,26 @@ class Questionnaire {
                 next: "result"
             },
             {
-    text: "簡易的な見分け方を紹介します。",
-    id: "taxInfo",
-    type: "taxInfo",
-    info: [
-        "方法①：住民税決定通知書（市区町村から届く）を確認する",
-        "「所得割」「均等割」の両方が0円 → 非課税世帯（本人が非課税）",
-        "どちらかでも金額が記載されている → 課税世帯",
-        "方法②：介護保険料の通知や、国保の通知書を確認する",
-        "「住民税非課税」と記載されている場合は、非課税であることが明記されています。",
-        "________________________________________",
-        "世帯全体で判断する目安（ざっくりとした基準です）",
-        "単身世帯：年金収入のみで年間約158万円以下であれば非課税の可能性大（65歳以上）",
-        "2人世帯（例：夫婦）：年金収入のみで 合計約211万円以下 であれば非課税の可能性",
-        "※扶養の有無や障害者控除などにより、正確な基準は多少前後します。"
-    ],
-    next: "taxStatus"
-}
-
+                text: "簡易的な見分け方を紹介します。",
+                id: "taxInfo",
+                type: "taxInfo",
+                info: [
+                    "方法①：住民税決定通知書（市区町村から届く）を確認する",
+                    "「所得割」「均等割」の両方が0円 → 非課税世帯（本人が非課税）",
+                    "どちらかでも金額が記載されている → 課税世帯",
+                    "方法②：介護保険料の通知や、国保の通知書を確認する",
+                    "「住民税非課税」と記載されている場合は、非課税であることが明記されています。",
+                    "________________________________________",
+                    "世帯全体で判断する目安（ざっくりとした基準です）",
+                    "単身世帯：年金収入のみで年間約158万円以下であれば非課税の可能性大（65歳以上）",
+                    "2人世帯（例：夫婦）：年金収入のみで 合計約211万円以下 であれば非課税の可能性",
+                    "※扶養の有無や障害者控除などにより、正確な基準は多少前後します。"
+                ],
+                next: "taxStatus"
+            }
+        ];
+        this.answers = {};
+    }
 
     showQuestion(index) {
         const question = this.questions[index];
@@ -135,34 +137,28 @@ class Questionnaire {
 
         if (hasSpouse) {
             const savingsAnswer = a['savings_spouse'];
-            // 年収80万円以下の場合：預貯金1650万円以下なら第2段階
             if (income === '80' && savingsAnswer !== 'over1650') {
                 this.showResult('second');
                 return;
-            } 
-            // 年収80万円超120万円以下の場合：預貯金1550万円以下なら第3段階①
+            }
             if (income === '120' && (savingsAnswer === '1500' || savingsAnswer === '1550')) {
                 this.showResult('third_1');
                 return;
             }
-            // 年収120万円超の場合：預貯金1500万円以下なら第3段階②
             if (income === '120+' && savingsAnswer === '1500') {
                 this.showResult('third_2');
                 return;
             }
         } else {
             const savingsAnswer = a['savings_single'];
-            // 年収80万円以下の場合：預貯金650万円以下なら第2段階
             if (income === '80' && savingsAnswer !== 'over650') {
                 this.showResult('second');
                 return;
-            } 
-            // 年収80万円超120万円以下の場合：預貯金550万円以下なら第3段階①
+            }
             if (income === '120' && (savingsAnswer === '500' || savingsAnswer === '550')) {
                 this.showResult('third_1');
                 return;
-            } 
-            // 年収120万円超の場合：預貯金500万円以下なら第3段階②
+            }
             if (income === '120+' && savingsAnswer === '500') {
                 this.showResult('third_2');
                 return;
