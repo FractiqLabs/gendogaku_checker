@@ -58,6 +58,7 @@ class Questionnaire {
                     "※扶養の有無や障害者控除などにより、正確な基準は多少前後します。"
                 ],
                 next: "taxStatus"
+                prev: "taxStatus"
             }
         ];
         this.answers = {};
