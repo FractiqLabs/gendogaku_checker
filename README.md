@@ -13,7 +13,7 @@
 
 ### アクセス方法
 Webブラウザで以下のURLにアクセスしてください：
-https://fractiqlabs.github.io/gengakuhantei/
+https://fractiqlabs.github.io/gendogaku_checker/
 
 ### ローカル開発環境での実行
 ```bash
