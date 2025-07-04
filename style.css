@@ -206,6 +206,18 @@ footer nav a {
     font-size: 0.9rem; /* 変更なし、em単位で自動調整 */
 }
 
+/* サイト上での回答履歴の左揃え */
+#answerHistory ul {
+    list-style: none;
+    padding-left: 0;
+    text-align: left;
+}
+
+#answerHistory li {
+    text-align: left;
+    margin-bottom: 0.3em;
+}
+
 /* 印刷時のスタイル */
 @media print {
     body {
@@ -223,7 +235,7 @@ footer nav a {
         width: auto;
     }
 
-    header, footer, .result-actions, button {
+    header, footer nav, .result-actions, button {
         display: none;
     }
 
@@ -247,30 +259,31 @@ footer nav a {
     }
 
     #answerHistory ul {
-        list-style: none; /* デフォルトのリストスタイルを無効化 */
-        padding-left: 0; /* パディングをリセット */
-        text-align: left; /* 左揃え */
+        list-style: none;
+        padding-left: 0;
+        text-align: left;
     }
 
     #answerHistory li {
-        text-align: left; /* 左揃え */
+        text-align: left;
         margin-bottom: 0.3em;
     }
 
-    .print-header {
+    .print-footer {
         display: block !important; /* 印刷時に表示 */
         text-align: left;
-        margin-bottom: 1.5rem;
+        margin-top: 1.5rem;
+        font-size: 0.8em;
     }
 
-    .print-header h1 {
-        font-size: 1.5em;
-        margin-bottom: 0.5em;
-    }
-
-    .print-header p {
-        font-size: 0.9em;
+    .print-footer p {
         margin-bottom: 0.2em;
+    }
+
+    .print-footer .print-disclaimer {
+        font-size: 0.7em; /* 小さめの文字 */
+        text-align: center; /* 中央揃え */
+        margin-top: 1em;
     }
 }
 
@@ -280,18 +293,25 @@ footer nav a {
     margin-bottom: 1.5rem;
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 0.5rem; /* ボタン間の余白を調整 */
 }
 
 .result-actions button {
     background-color: var(--secondary-color);
     color: var(--white-color);
-    padding: 0.8rem 1.5rem;
-    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem; /* ボタンを小さくする */
+    font-size: 0.8rem; /* フォントサイズを小さくする */
     border-radius: 8px;
 }
 
 .result-actions button:hover {
     background-color: var(--primary-color);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#resultArea > button {
+    margin-top: 2.5rem; /* 「もう一度診断する」ボタンの上の余白を調整 */
+    display: block; /* 独立したブロック要素にする */
+    margin-left: auto; /* 中央揃え */
+    margin-right: auto; /* 中央揃え */
 }
