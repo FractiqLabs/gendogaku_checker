@@ -22,16 +22,19 @@
 <body>
   <div class="container">
     <header>
-      <h1 id="headerTitle">負担限度額認定チェッカー</h1>
-      <p id="headerSubtitle">いくつかの簡単な質問に答えるだけで、介護保険の負担限度額認定がどの段階に該当するかをチェックできます。</p>
-      <p id="headerCaution"><strong>【ご注意】</strong>本ツールはあくまで簡易的な判定です。正確な情報は、必ずお住まいの市区町村の窓口でご確認ください。</p>
+      <h1>負担限度額認定チェッカー</h1>
+      <p>いくつかの簡単な質問に答えるだけで、介護保険の負担限度額認定がどの段階に該当するかをチェックできます。</p>
+      <p><strong>【ご注意】</strong>本ツールはあくまで簡易的な判定です。正確な情報は、必ずお住まいの市区町村の窓口でご確認ください。</p>
     </header>
 
     <div class="language-selector">
-      <img src="https://flagsapi.com/JP/flat/32.png" alt="Japanese" data-lang="ja" class="flag-icon">
-      <img src="https://flagsapi.com/US/flat/32.png" alt="English" data-lang="en" class="flag-icon">
-      <img src="https://flagsapi.com/CN/flat/32.png" alt="Chinese" data-lang="zh" class="flag-icon">
-      <img src="https://flagsapi.com/KR/flat/32.png" alt="Korean" data-lang="ko" class="flag-icon">
+      <label for="language-select">言語:</label>
+      <select id="language-select">
+        <option value="ja">日本語</option>
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="ko">한국어</option>
+      </select>
     </div>
 
     <main>
