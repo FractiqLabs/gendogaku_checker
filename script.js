@@ -314,14 +314,9 @@ function setLanguage(lang) {
     currentLanguage = lang;
 
     // Update header
-    document.querySelector('h1').textContent = translations[lang].headerTitle;
-    document.querySelector('header p:nth-of-type(1)').textContent = translations[lang].headerSubtitle;
-    document.querySelector('header p:nth-of-type(2)').textContent = translations[lang].headerCaution;
-    document.querySelector('.language-selector label').textContent = translations[lang].languageLabel;
-    document.querySelector('#language-select option[value="ja"]').textContent = translations[lang].languageJa;
-    document.querySelector('#language-select option[value="en"]').textContent = translations[lang].languageEn;
-    document.querySelector('#language-select option[value="zh"]').textContent = translations[lang].languageZh;
-    document.querySelector('#language-select option[value="ko"]').textContent = translations[lang].languageKo;
+    document.getElementById('headerTitle').textContent = translations[lang].headerTitle;
+    document.getElementById('headerSubtitle').textContent = translations[lang].headerSubtitle;
+    document.getElementById('headerCaution').textContent = translations[lang].headerCaution;
 
 
     // Update result actions
@@ -347,10 +342,11 @@ function setLanguage(lang) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const langSelect = document.getElementById('language-select');
-    langSelect.value = currentLanguage; // Set initial selection
-    langSelect.addEventListener('change', (event) => {
-        setLanguage(event.target.value);
+    const flagIcons = document.querySelectorAll('.flag-icon');
+    flagIcons.forEach(icon => {
+        icon.addEventListener('click', (event) => {
+            setLanguage(event.target.dataset.lang);
+        });
     });
     setLanguage(currentLanguage); // Apply default language on load
 });
