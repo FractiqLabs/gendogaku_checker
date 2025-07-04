@@ -232,6 +232,7 @@ class Questionnaire {
         answerHistory.innerHTML = historyHTML;
 
         resultArea.classList.remove('hidden');
+        document.getElementById('questionArea').classList.add('hidden'); // 質問エリアを非表示にする
     }
 }
 

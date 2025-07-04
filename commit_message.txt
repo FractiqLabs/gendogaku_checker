@@ -1,1 +1,1 @@
-Add print and save functionality to result page
+Hide question area when result is displayed for printing
