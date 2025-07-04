@@ -2,55 +2,40 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>負担限度額認定チェッカー｜介護保険負担限度額認定の簡易チェックツール</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
 
-<!-- ファビコン -->
-<link rel="icon" type="image/x-icon" href="favicon.ico">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-
-<!-- Apple Touch Icon -->
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
-
-<!-- Android 用 -->
-<link rel="icon" sizes="192x192" href="android-chrome-192x192.png">
-<link rel="icon" sizes="512x512" href="android-chrome-512x512.png">
-
-<!-- PWA用 Web Manifest -->
-<link rel="manifest" href="site.webmanifest">
-
-<!-- Windows 用タイル（必要なら） -->
-<!-- <meta name="msapplication-TileImage" content="mstile-150x150.png"> -->
-<meta name="theme-color" content="#ffffff">
-
-
-<!-- テーマカラー -->
-<meta name="theme-color" content="#ffffff">
-
-
-  <!-- ブラウザのテーマカラー -->
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" sizes="192x192" href="android-chrome-192x192.png">
+  <link rel="icon" sizes="512x512" href="android-chrome-512x512.png">
+  <link rel="manifest" href="site.webmanifest">
   <meta name="theme-color" content="#ffffff">
 </head>
 <body>
   <div class="container">
     <header>
       <h1>負担限度額認定チェッカー</h1>
-      <p>〇いくつかの質問に答えることで、負担限度額認定の段階を判定します。</p>
-      <p>〇本ツールは簡易的な判定を目的としており、最終的な認定可否の判断については、必ずお住まいの市区町村窓口にてご確認ください。</p>
-      <p>〇本ツールの利用により生じたいかなる損害についても、当方では一切の責任を負いかねますので、あらかじめご了承ください。</p>
+      <p>いくつかの簡単な質問に答えるだけで、介護保険の負担限度額認定がどの段階に該当するかをチェックできます。</p>
+      <p><strong>【ご注意】</strong>本ツールはあくまで簡易的な判定です。正確な情報は、必ずお住まいの市区町村の窓口でご確認ください。</p>
     </header>
 
     <main>
       <section id="questionArea">
-        <!-- 質問がここに表示されます -->
+        <!-- Questions will be displayed here -->
       </section>
 
       <section id="resultArea" class="hidden">
         <h2 id="resultText"></h2>
         <p id="resultExplanation"></p>
-        <button onclick="goToTop()">TOP画面に戻る</button>
+        <button onclick="goToTop()">もう一度診断する</button>
       </section>
     </main>
 

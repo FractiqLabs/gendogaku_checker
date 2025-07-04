@@ -1,3 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #5dade2;
+    --accent-color: #f1c40f;
+    --background-color: #f5f7fa;
+    --text-color: #333;
+    --white-color: #fff;
+    --light-gray-color: #fdfefe;
+    --gray-color: #d5dbdb;
+    --danger-color: #e74c3c;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -5,70 +19,86 @@
 }
 
 body {
-    font-family: '游ゴシック', 'Yu Gothic', sans-serif;
-    line-height: 1.6;
-    background-color: #f5f5f5;
-    color: #333;
+    font-family: 'Noto Sans JP', sans-serif;
+    line-height: 1.8;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
 }
 
 .container {
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 700px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 3rem;
+    background-color: var(--white-color);
+    border-radius: 16px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease-in-out;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 3rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 2rem;
 }
 
 h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 20px;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 2.2rem;
+    margin-bottom: 0.8rem;
 }
 
-.disclaimer {
-    text-align: center;
-    color: #666;
-    margin-bottom: 30px;
+header p {
+    font-size: 1rem;
+    color: var(--secondary-color);
+    max-width: 550px;
+    margin: 0.8rem auto;
+}
+
+main {
+    transition: all 0.4s ease-in-out;
 }
 
 .question {
-    margin-bottom: 20px;
-    padding: 15px;
-    background-color: #f8f9fa;
-    border-radius: 4px;
+    margin-bottom: 2rem;
+    padding: 2rem;
+    background-color: var(--light-gray-color);
+    border-radius: 12px;
+    border-left: 6px solid var(--primary-color);
 }
 
 .options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 10px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .option {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    padding: 1.2rem 1.8rem;
+    border: 2px solid var(--gray-color);
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
-    background-color: white;
+    background-color: var(--white-color);
+    font-size: 1.1rem;
+    text-align: center;
+    font-weight: 700;
 }
 
 .option:hover {
-    background-color: #e9ecef;
-}
-
-.tax-info {
-    margin: 20px 0;
-    padding: 15px;
-    background-color: #fff3cd;
-    border-radius: 4px;
-}
-
-.tax-info p {
-    margin: 5px 0;
-    line-height: 1.4;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
 .hidden {
@@ -76,60 +106,91 @@ h1 {
 }
 
 #resultArea {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
+    margin-top: 3rem;
+    padding: 2.5rem;
+    background-color: var(--light-gray-color);
+    border-radius: 16px;
+    text-align: center;
+    border: 2px solid var(--primary-color);
 }
 
 #resultText {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #28a745;
-    margin-bottom: 10px;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
 }
 
 #resultExplanation {
-    color: #666;
-    margin-bottom: 20px;
-}
-
-.result-buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
+    color: var(--secondary-color);
+    margin-bottom: 2.5rem;
+    font-size: 1.1rem;
+    line-height: 1.7;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 1rem 2rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 1.1rem;
+    font-weight: 700;
     transition: all 0.3s ease;
-}
-
-.back-to-top {
-    background-color: #007bff;
-    color: white;
-}
-
-.contact-button {
-    background-color: #28a745;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
 }
 
 button:hover {
-    opacity: 0.9;
+    background-color: var(--secondary-color);
+    box-shadow: 0 7px 18px rgba(52, 152, 219, 0.4);
+    transform: translateY(-4px);
+}
+
+footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--primary-color);
+    font-size: 1rem;
+    color: var(--secondary-color);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 2rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    #resultText {
+        font-size: 1.8rem;
+    }
 }
 
 @media (max-width: 480px) {
     .container {
-        margin: 10px;
-        padding: 10px;
+        padding: 1.5rem;
     }
-    
-    .result-buttons {
-        flex-direction: column;
+
+    h1 {
+        font-size: 1.8rem;
     }
+
+    #resultText {
+        font-size: 1.6rem;
+    }
+}
+
+/* 最後の選択肢に余白を追加 */
+.options .option:last-child {
+    margin-top: 1.5rem;
+}
+
+/* TOP画面に戻るボタンに余白を追加 */
+#resultArea button {
+    margin-top: 1.5rem;
 }
