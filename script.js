@@ -57,7 +57,7 @@ class Questionnaire {
                     "2人世帯（例：夫婦）：年金収入のみで 合計約211万円以下 であれば非課税の可能性",
                     "※扶養の有無や障害者控除などにより、正確な基準は多少前後します。"
                 ],
-                next: "taxStatus",  // ←ここにカンマ必須
+                next: "taxStatus",
                 prev: "taxStatus"
             }
         ];
