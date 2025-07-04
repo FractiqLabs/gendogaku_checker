@@ -275,6 +275,7 @@ function handleAnswer(answer, questionId) {
 function goToTop() {
     questionnaire.answers = {};
     document.getElementById('resultArea').classList.add('hidden');
+    document.getElementById('questionArea').classList.remove('hidden'); // 質問エリアを再表示
     questionnaire.showQuestion(0);
 }
 
