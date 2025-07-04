@@ -185,12 +185,9 @@ footer {
     }
 }
 
-/* 最後の選択肢に余白を追加 */
-.options .option:last-child {
-    margin-top: 1.5rem;
-}
+/* 選択肢はgapプロパティにより等間隔に配置されます */
 
-/* TOP画面に戻るボタンに余白を追加 */
+/* 「TOP画面に戻る」ボタンの上に余白を設ける */
 #resultArea button {
-    margin-top: 1.5rem;
+    margin-top: 2.5rem; /* ボタンの上の余白を調整 */
 }
