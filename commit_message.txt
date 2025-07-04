@@ -1,1 +1,1 @@
-Remove 'Back to Top' button from question view
+Move navigation links to footer

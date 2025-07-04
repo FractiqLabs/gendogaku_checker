@@ -185,9 +185,26 @@ footer {
     }
 }
 
-/* 選択肢はgapプロパティにより等間隔に配置されます */
+footer nav {
+    margin-bottom: 1rem;
+}
 
-/* 「TOP画面に戻る」ボタンの上に余白を設ける */
-#resultArea button {
-    margin-top: 2.5rem; /* ボタンの上の余白を調整 */
+footer nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+footer nav a {
+    text-decoration: none;
+    color: var(--secondary-color);
+    font-weight: 400;
+    transition: color 0.3s ease;
+    font-size: 0.9rem;
+}
+
+footer nav a:hover {
+    color: var(--primary-color);
 }
