@@ -1,1 +1,1 @@
-Adjust spacing for options and button
+Remove 'Back to Top' button from question view

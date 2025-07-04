@@ -73,7 +73,6 @@ class Questionnaire {
                 <div class="options">
                     ${this.getOptionsHTML(question)}
                 </div>
-                <button onclick="goToTop()" class="back-to-top">TOP画面に戻る</button>
             </div>
         `;
     }
