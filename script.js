@@ -172,6 +172,7 @@ class Questionnaire {
         const resultText = document.getElementById('resultText');
         const resultExplanation = document.getElementById('resultExplanation');
         const resultArea = document.getElementById('resultArea');
+        const answerHistory = document.getElementById('answerHistory');
         let text = '', explanation = '';
 
         switch (result) {
@@ -199,6 +200,37 @@ class Questionnaire {
 
         resultText.textContent = text;
         resultExplanation.textContent = explanation;
+
+        // 回答履歴の表示
+        let historyHTML = '<h3>あなたの回答履歴</h3><ul>';
+        for (const qId in this.answers) {
+            const question = this.questions.find(q => q.id === qId);
+            if (question) {
+                let answerText = this.answers[qId];
+                // 回答の表示をより分かりやすくする
+                if (question.type === 'yesno' || question.type === 'yesno_unknown') {
+                    answerText = (answerText === 'yes') ? 'はい' : (answerText === 'no') ? 'いいえ' : 'わからない';
+                } else if (question.type === 'income') {
+                    if (answerText === '80') answerText = '80万円以下';
+                    else if (answerText === '120') answerText = '80万円超120万円以下';
+                    else if (answerText === '120+') answerText = '120万円超';
+                } else if (question.type === 'savings_spouse') {
+                    if (answerText === '1500') answerText = '1500万円以下';
+                    else if (answerText === '1550') answerText = '1550万円以下';
+                    else if (answerText === '1650') answerText = '1650万円以下';
+                    else if (answerText === 'over1650') answerText = '1650万円超';
+                } else if (question.type === 'savings_single') {
+                    if (answerText === '500') answerText = '500万円以下';
+                    else if (answerText === '550') answerText = '550万円以下';
+                    else if (answerText === '650') answerText = '650万円以下';
+                    else if (answerText === 'over650') answerText = '650万円超';
+                }
+                historyHTML += `<li><strong>${question.text}</strong>: ${answerText}</li>`;
+            }
+        }
+        historyHTML += '</ul>';
+        answerHistory.innerHTML = historyHTML;
+
         resultArea.classList.remove('hidden');
     }
 }
@@ -243,6 +275,27 @@ function goToTop() {
     questionnaire.answers = {};
     document.getElementById('resultArea').classList.add('hidden');
     questionnaire.showQuestion(0);
+}
+
+function printResult() {
+    window.print();
+}
+
+function saveAsText() {
+    const resultText = document.getElementById('resultText').textContent;
+    const resultExplanation = document.getElementById('resultExplanation').textContent;
+    const answerHistory = document.getElementById('answerHistory').innerText; // innerTextで整形されたテキストを取得
+
+    const content = `負担限度額認定チェッカー 診断結果\n\n${resultText}\n${resultExplanation}\n\n${answerHistory}\n\n※この結果は簡易的なものです。最終的な認定可否は市区町村窓口でご確認ください。`;
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = '負担限度額認定診断結果.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
 }
 
 // 初期表示

@@ -206,6 +206,74 @@ footer nav a {
     font-size: 0.9rem; /* 変更なし、em単位で自動調整 */
 }
 
-footer nav a:hover {
-    color: var(--primary-color);
+/* 印刷時のスタイル */
+@media print {
+    body {
+        font-size: 12pt;
+        color: #000;
+        background-color: #fff;
+    }
+
+    .container {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        max-width: none;
+        width: auto;
+    }
+
+    header, footer, .result-actions, button {
+        display: none;
+    }
+
+    #resultArea {
+        border: none;
+        background-color: #fff;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+    }
+
+    #resultText, #resultExplanation, #answerHistory {
+        display: block !important;
+        margin-bottom: 1rem;
+    }
+
+    #answerHistory h3 {
+        font-size: 1.2em;
+        margin-top: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    #answerHistory ul {
+        list-style: disc inside;
+        padding-left: 1.5rem;
+    }
+
+    #answerHistory li {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* 新しいボタンのスタイル */
+.result-actions {
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.result-actions button {
+    background-color: var(--secondary-color);
+    color: var(--white-color);
+    padding: 0.8rem 1.5rem;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+.result-actions button:hover {
+    background-color: var(--primary-color);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }

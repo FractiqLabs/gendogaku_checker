@@ -1,1 +1,1 @@
-Adjust overall site size to 80%
+Add print and save functionality to result page
