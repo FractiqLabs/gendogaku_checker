@@ -1,1 +1,1 @@
-Move navigation links to footer
+Adjust overall site size to 80%
