@@ -1,1 +1,1 @@
-Hide question area when result is displayed for printing
+Improve print layout: left-align history, add header info

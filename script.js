@@ -279,6 +279,7 @@ function goToTop() {
 }
 
 function printResult() {
+    document.getElementById('printUrl').textContent = window.location.href;
     window.print();
 }
 

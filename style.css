@@ -247,12 +247,30 @@ footer nav a {
     }
 
     #answerHistory ul {
-        list-style: disc inside;
-        padding-left: 1.5rem;
+        list-style: none; /* デフォルトのリストスタイルを無効化 */
+        padding-left: 0; /* パディングをリセット */
+        text-align: left; /* 左揃え */
     }
 
     #answerHistory li {
-        margin-bottom: 0.5rem;
+        text-align: left; /* 左揃え */
+        margin-bottom: 0.3em;
+    }
+
+    .print-header {
+        display: block !important; /* 印刷時に表示 */
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+
+    .print-header h1 {
+        font-size: 1.5em;
+        margin-bottom: 0.5em;
+    }
+
+    .print-header p {
+        font-size: 0.9em;
+        margin-bottom: 0.2em;
     }
 }
 
