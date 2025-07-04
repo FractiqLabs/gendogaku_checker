@@ -247,31 +247,49 @@ footer nav a {
     }
 
     #answerHistory ul {
-        list-style: none; /* デフォルトのリストスタイルを無効化 */
-        padding-left: 0; /* パディングをリセット */
-        text-align: left; /* 左揃え */
+        list-style: none;
+        padding-left: 0;
+        text-align: left; /* サイト上でも左揃え */
     }
 
     #answerHistory li {
-        text-align: left; /* 左揃え */
+        text-align: left;
         margin-bottom: 0.3em;
     }
 
     .print-header {
+        display: none !important; /* 印刷時に表示 */
+    }
+
+    .print-footer {
         display: block !important; /* 印刷時に表示 */
         text-align: left;
-        margin-bottom: 1.5rem;
+        margin-top: 1.5rem;
+        font-size: 0.8em;
     }
 
-    .print-header h1 {
-        font-size: 1.5em;
-        margin-bottom: 0.5em;
-    }
-
-    .print-header p {
-        font-size: 0.9em;
+    .print-footer p {
         margin-bottom: 0.2em;
     }
+
+    .print-footer .print-disclaimer {
+        font-size: 0.7em; /* 小さめの文字 */
+        text-align: center; /* 中央揃え */
+        margin-top: 1em;
+    }
+}
+
+/* サイト上での回答履歴の左揃え */
+#answerHistory ul {
+    list-style: none;
+    padding-left: 0;
+    text-align: left;
+}
+
+#answerHistory li {
+    text-align: left;
+    margin-bottom: 0.3em;
+}
 }
 
 /* 新しいボタンのスタイル */
