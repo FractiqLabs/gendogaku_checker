@@ -236,7 +236,7 @@ footer nav a {
     }
 
     header, footer nav, .result-actions {
-        display: none;
+        display: none !important;
     }
 
     #diagnoseAgainButton {
