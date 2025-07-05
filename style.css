@@ -235,8 +235,12 @@ footer nav a {
         width: auto;
     }
 
-    header, footer nav, .result-actions, button, button[onclick="goToTop()"] {
+    header, footer nav, .result-actions {
         display: none;
+    }
+
+    #diagnoseAgainButton {
+        display: none !important;
     }
 
     #resultArea {
