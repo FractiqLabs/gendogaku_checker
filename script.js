@@ -92,8 +92,8 @@ class Questionnaire {
                 `;
             case 'income':
                 return `
-                    <div class="option" onclick="handleAnswer('80', '${question.id}')">80万円以下</div>
-                    <div class="option" onclick="handleAnswer('120', '${question.id}')">80万円超120万円以下</div>
+                    <div class="option" onclick="handleAnswer('80', '${question.id}')">80.9万円以下</div>
+                    <div class="option" onclick="handleAnswer('120', '${question.id}')">80.9万円超120万円以下</div>
                     <div class="option" onclick="handleAnswer('120+', '${question.id}')">120万円超</div>
                 `;
             case 'savings_spouse':
@@ -182,11 +182,11 @@ class Questionnaire {
                 break;
             case 'second':
                 text = 'あなたは第2段階に該当する可能性があります';
-                explanation = '年間収入80万円以下かつ預貯金要件（本人のみ650万円以下・配偶者合計1,650万円以下）を満たす非課税世帯の場合です。';
+                explanation = '年間収入80.9万円以下かつ預貯金要件（本人のみ650万円以下・配偶者合計1,650万円以下）を満たす非課税世帯の場合です。';
                 break;
             case 'third_1':
                 text = 'あなたは第3段階①に該当する可能性があります';
-                explanation = '年間収入80万円超120万円以下かつ預貯金要件（本人のみ550万円以下・配偶者合計1,550万円以下）を満たす非課税世帯の場合です。';
+                explanation = '年間収入80.9万円超120万円以下かつ預貯金要件（本人のみ550万円以下・配偶者合計1,550万円以下）を満たす非課税世帯の場合です。';
                 break;
             case 'third_2':
                 text = 'あなたは第3段階②に該当する可能性があります';
