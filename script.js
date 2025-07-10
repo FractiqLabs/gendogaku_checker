@@ -92,7 +92,7 @@ class Questionnaire {
                 `;
             case 'income':
                 return `
-                    <div class="option" onclick="handleAnswer('80', '${question.id}')">80.9万円以下</div>
+                    <div class="option" onclick="handleAnswer('80.9', '${question.id}')">80.9万円以下</div>
                     <div class="option" onclick="handleAnswer('120', '${question.id}')">80.9万円超120万円以下</div>
                     <div class="option" onclick="handleAnswer('120+', '${question.id}')">120万円超</div>
                 `;
@@ -137,7 +137,7 @@ class Questionnaire {
 
         if (hasSpouse) {
             const savingsAnswer = a['savings_spouse'];
-            if (income === '80' && savingsAnswer !== 'over1650') {
+            if (income === '80.9' && savingsAnswer !== 'over1650') {
                 this.showResult('second');
                 return;
             }
@@ -151,7 +151,7 @@ class Questionnaire {
             }
         } else {
             const savingsAnswer = a['savings_single'];
-            if (income === '80' && savingsAnswer !== 'over650') {
+            if (income === '80.9' && savingsAnswer !== 'over650') {
                 this.showResult('second');
                 return;
             }
@@ -211,8 +211,8 @@ class Questionnaire {
                 if (question.type === 'yesno' || question.type === 'yesno_unknown') {
                     answerText = (answerText === 'yes') ? 'はい' : (answerText === 'no') ? 'いいえ' : 'わからない';
                 } else if (question.type === 'income') {
-                    if (answerText === '80') answerText = '80万円以下';
-                    else if (answerText === '120') answerText = '80万円超120万円以下';
+                    if (answerText === '80.9') answerText = '80.9万円以下';
+                    else if (answerText === '120') answerText = '80.9万円超120万円以下';
                     else if (answerText === '120+') answerText = '120万円超';
                 } else if (question.type === 'savings_spouse') {
                     if (answerText === '1500') answerText = '1500万円以下';
