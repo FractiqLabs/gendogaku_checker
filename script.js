@@ -478,7 +478,6 @@ function generateQRCode() {
             <h3>診断結果を共有</h3>
             <img src="${qrCodeUrl}" alt="QRコード" class="qr-image">
             <p class="qr-description">このQRコードをスキャンすると診断結果が表示されます</p>
-            <p class="qr-url" style="font-size: 0.7rem; color: #666; word-break: break-all; margin: 10px 0;">URL: ${shareUrl}</p>
             <button onclick="document.getElementById('qrCodeContainer').classList.add('hidden')" class="qr-close-btn">閉じる</button>
         </div>
     `;
@@ -503,9 +502,18 @@ function checkSharedResult() {
         
         if (result && explanation) {
             console.log('共有結果を表示します');
+            alert('共有された診断結果を表示します');
+            
+            // URLデコードして正しい日本語テキストに変換
+            const decodedResult = decodeURIComponent(result);
+            const decodedExplanation = decodeURIComponent(explanation);
+            
+            console.log('デコード後 result:', decodedResult);
+            console.log('デコード後 explanation:', decodedExplanation);
+            
             // 結果エリアに共有された内容を表示
-            document.getElementById('resultText').textContent = result;
-            document.getElementById('resultExplanation').textContent = explanation;
+            document.getElementById('resultText').textContent = decodedResult;
+            document.getElementById('resultExplanation').textContent = decodedExplanation;
             document.getElementById('answerHistory').innerHTML = '<h3>共有された診断結果</h3><p>この結果は他のユーザーから共有されたものです。</p>';
             
             // 結果エリアを表示、質問エリアを非表示
@@ -525,9 +533,19 @@ function checkSharedResult() {
 window.onload = () => {
     console.log('ページが読み込まれました');
     // 共有された結果があるかチェック
-    if (!checkSharedResult()) {
-        // 通常の診断開始
-        console.log('通常の診断を開始します');
-        questionnaire.showQuestion(0);
+    try {
+        if (!checkSharedResult()) {
+            // 通常の診断開始
+            console.log('通常の診断を開始します');
+            questionnaire.showQuestion(0);
+        }
+    } catch (error) {
+        console.error('エラーが発生しました:', error);
+        alert('エラー: ' + error.message);
     }
 };
+
+// DOMContentLoaded でも試す
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOMContentLoaded実行');
+});
