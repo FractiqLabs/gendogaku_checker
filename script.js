@@ -453,6 +453,11 @@ function generateQRCode() {
     const resultExplanation = document.getElementById('resultExplanation').textContent;
     const currentUrl = window.location.href.split('?')[0]; // クエリパラメータを除去
     
+    console.log('生成されるURL情報:');
+    console.log('resultText:', resultText);
+    console.log('resultExplanation:', resultExplanation);
+    console.log('currentUrl:', currentUrl);
+    
     // 結果情報をURLパラメータとして追加
     const params = new URLSearchParams({
         result: resultText,
@@ -461,6 +466,7 @@ function generateQRCode() {
     });
     
     const shareUrl = `${currentUrl}?${params.toString()}`;
+    console.log('共有URL:', shareUrl);
     
     // QRコード生成（QR Server APIを使用）
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareUrl)}`;
@@ -470,6 +476,7 @@ function generateQRCode() {
             <h3>診断結果を共有</h3>
             <img src="${qrCodeUrl}" alt="QRコード" class="qr-image">
             <p class="qr-description">このQRコードをスキャンすると診断結果が表示されます</p>
+            <p class="qr-url" style="font-size: 0.7rem; color: #666; word-break: break-all; margin: 10px 0;">URL: ${shareUrl}</p>
             <button onclick="document.getElementById('qrCodeContainer').classList.add('hidden')" class="qr-close-btn">閉じる</button>
         </div>
     `;
@@ -479,12 +486,21 @@ function generateQRCode() {
 
 // URLパラメータから共有された結果を表示
 function checkSharedResult() {
+    console.log('checkSharedResult実行開始');
     const urlParams = new URLSearchParams(window.location.search);
+    console.log('現在のURL:', window.location.href);
+    console.log('URLパラメータ:', window.location.search);
+    console.log('shared パラメータ:', urlParams.get('shared'));
+    
     if (urlParams.get('shared') === 'true') {
         const result = urlParams.get('result');
         const explanation = urlParams.get('explanation');
         
+        console.log('result パラメータ:', result);
+        console.log('explanation パラメータ:', explanation);
+        
         if (result && explanation) {
+            console.log('共有結果を表示します');
             // 結果エリアに共有された内容を表示
             document.getElementById('resultText').textContent = result;
             document.getElementById('resultExplanation').textContent = explanation;
@@ -494,7 +510,11 @@ function checkSharedResult() {
             document.getElementById('resultArea').classList.remove('hidden');
             document.getElementById('questionArea').classList.add('hidden');
             return true;
+        } else {
+            console.log('result または explanation が空です');
         }
+    } else {
+        console.log('shared パラメータが true ではありません');
     }
     return false;
 }
