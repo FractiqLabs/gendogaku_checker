@@ -63,15 +63,36 @@ class Questionnaire {
             }
         ];
         this.answers = {};
+        this.currentQuestionIndex = 0;
+        this.questionHistory = [];
     }
 
     showQuestion(index) {
+        this.currentQuestionIndex = index;
         const question = this.questions[index];
         const questionArea = document.getElementById('questionArea');
         const tooltipHTML = question.tooltip ? 
             `<span class="help-icon" data-tooltip="${question.tooltip.replace(/"/g, '&quot;')}">?</span>` : '';
         
+        // 進捗表示
+        const totalQuestions = this.getTotalQuestions();
+        const currentStep = index + 1;
+        const progressHTML = `
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${(currentStep / totalQuestions) * 100}%"></div>
+                </div>
+                <div class="progress-text">${currentStep} / ${totalQuestions}</div>
+            </div>
+        `;
+        
+        // 戻るボタン
+        const backButtonHTML = this.questionHistory.length > 0 ? 
+            `<button class="back-button" onclick="questionnaire.goBackToPreviousQuestion()">← 前の質問に戻る</button>` : '';
+        
         questionArea.innerHTML = `
+            ${progressHTML}
+            ${backButtonHTML}
             <div class="question">
                 <p>${question.text} ${tooltipHTML}</p>
                 <div class="options">
@@ -82,6 +103,25 @@ class Questionnaire {
         
         // ツールチップの初期化
         this.initTooltips();
+    }
+
+    getTotalQuestions() {
+        // taxInfoは説明ページなので除外
+        return this.questions.filter(q => q.type !== 'taxInfo').length;
+    }
+
+    goBackToPreviousQuestion() {
+        if (this.questionHistory.length > 0) {
+            const previousState = this.questionHistory.pop();
+            this.currentQuestionIndex = previousState.questionIndex;
+            
+            // 最後の回答を削除
+            if (previousState.answeredQuestionId) {
+                delete this.answers[previousState.answeredQuestionId];
+            }
+            
+            this.showQuestion(this.currentQuestionIndex);
+        }
     }
 
     getOptionsHTML(question) {
@@ -342,6 +382,12 @@ function handleAnswer(answer, questionId) {
         return;
     }
 
+    // 履歴に現在の状態を保存
+    questionnaire.questionHistory.push({
+        questionIndex: questionnaire.currentQuestionIndex,
+        answeredQuestionId: questionId
+    });
+
     questionnaire.answers[questionId] = answer;
     const current = questionnaire.questions.find(q => q.id === questionId);
 
@@ -364,6 +410,8 @@ function handleAnswer(answer, questionId) {
 
 function goToTop() {
     questionnaire.answers = {};
+    questionnaire.questionHistory = [];
+    questionnaire.currentQuestionIndex = 0;
     document.getElementById('resultArea').classList.add('hidden');
     document.getElementById('questionArea').classList.remove('hidden'); // 質問エリアを再表示
     questionnaire.showQuestion(0);
@@ -389,6 +437,31 @@ function saveAsText() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(a.href);
+}
+
+function generateQRCode() {
+    const qrContainer = document.getElementById('qrCodeContainer');
+    const currentUrl = window.location.href;
+    
+    // QRコードが既に表示されている場合は非表示にする
+    if (!qrContainer.classList.contains('hidden')) {
+        qrContainer.classList.add('hidden');
+        return;
+    }
+    
+    // QRコード生成（QR Server APIを使用）
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
+    
+    qrContainer.innerHTML = `
+        <div class="qr-content">
+            <h3>診断結果を共有</h3>
+            <img src="${qrCodeUrl}" alt="QRコード" class="qr-image">
+            <p class="qr-description">このQRコードをスキャンして診断結果を共有できます</p>
+            <button onclick="document.getElementById('qrCodeContainer').classList.add('hidden')" class="qr-close-btn">閉じる</button>
+        </div>
+    `;
+    
+    qrContainer.classList.remove('hidden');
 }
 
 // 初期表示
