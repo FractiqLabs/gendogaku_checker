@@ -514,7 +514,7 @@ function checkSharedResult() {
             // 結果エリアに共有された内容を表示
             document.getElementById('resultText').textContent = decodedResult;
             document.getElementById('resultExplanation').textContent = decodedExplanation;
-            document.getElementById('answerHistory').innerHTML = '<h3>共有された診断結果</h3><p>この結果は他のユーザーから共有されたものです。</p>';
+            document.getElementById('answerHistory').innerHTML = '<h3>あなたの回答履歴</h3><p>この結果は共有されたものです。詳細な回答履歴は省略されています。</p>';
             
             // 結果エリアを表示、質問エリアを非表示
             document.getElementById('resultArea').classList.remove('hidden');
