@@ -142,6 +142,67 @@ main {
     display: none;
 }
 
+/* ヘルプアイコンとツールチップ */
+.help-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 50%;
+    text-align: center;
+    font-size: 12px;
+    line-height: 16px;
+    cursor: pointer;
+    margin-left: 8px;
+    vertical-align: top;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.help-icon:hover {
+    background-color: var(--secondary-color);
+}
+
+.tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: var(--white-color);
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-width: 320px;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+}
+
+/* 画面下部に表示される場合の矢印 */
+.tooltip.below::after {
+    top: -10px;
+    border-color: transparent transparent rgba(0, 0, 0, 0.9) transparent;
+}
+
+/* モバイル対応 */
+@media (max-width: 768px) {
+    .tooltip {
+        max-width: 280px;
+        font-size: 13px;
+        padding: 10px;
+    }
+}
+
 #resultArea {
     margin-top: 2.4rem; /* 3rem * 0.8 */
     padding: 2rem; /* 2.5rem * 0.8 */

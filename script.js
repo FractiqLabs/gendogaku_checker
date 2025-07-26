@@ -14,7 +14,8 @@ class Questionnaire {
                 id: "pensionStatus",
                 type: "yesno",
                 yes: "result_first",
-                no: "income"
+                no: "income",
+                tooltip: "老齢福祉年金について：<br>老齢福祉年金は、国民年金制度が始まる前（昭和36年以前）から高齢だった方への救済措置として設けられた年金です。<br>受給条件は明治44年～大正5年生まれの方で、現在の受給者は109歳以上となります。制度としては新規受給者はなく、受給者数は年々減少しています。<br>負担限度額認定の第1段階要件として制度上残されているため、確認項目としていますが、現在ではほとんどの方が「いいえ」を選択することになります。"
             },
             {
                 text: "年間の合計所得金額はいくらですか？",
@@ -67,14 +68,20 @@ class Questionnaire {
     showQuestion(index) {
         const question = this.questions[index];
         const questionArea = document.getElementById('questionArea');
+        const tooltipHTML = question.tooltip ? 
+            `<span class="help-icon" data-tooltip="${question.tooltip.replace(/"/g, '&quot;')}">?</span>` : '';
+        
         questionArea.innerHTML = `
             <div class="question">
-                <p>${question.text}</p>
+                <p>${question.text} ${tooltipHTML}</p>
                 <div class="options">
                     ${this.getOptionsHTML(question)}
                 </div>
             </div>
         `;
+        
+        // ツールチップの初期化
+        this.initTooltips();
     }
 
     getOptionsHTML(question) {
@@ -233,6 +240,70 @@ class Questionnaire {
 
         resultArea.classList.remove('hidden');
         document.getElementById('questionArea').classList.add('hidden'); // 質問エリアを非表示にする
+    }
+
+    initTooltips() {
+        const helpIcons = document.querySelectorAll('.help-icon');
+        helpIcons.forEach(icon => {
+            // マウスオーバー/アウトイベント
+            icon.addEventListener('mouseenter', this.showTooltip.bind(this));
+            icon.addEventListener('mouseleave', this.hideTooltip.bind(this));
+            
+            // タッチ対応
+            icon.addEventListener('touchstart', this.toggleTooltip.bind(this));
+            icon.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            });
+        });
+
+        // 外側クリックでツールチップを閉じる
+        document.addEventListener('click', this.hideAllTooltips.bind(this));
+    }
+
+    showTooltip(event) {
+        this.hideAllTooltips();
+        const icon = event.target;
+        const tooltipText = icon.getAttribute('data-tooltip');
+        
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.innerHTML = tooltipText;
+        document.body.appendChild(tooltip);
+        
+        const rect = icon.getBoundingClientRect();
+        tooltip.style.left = Math.max(10, rect.left - tooltip.offsetWidth / 2 + rect.width / 2) + 'px';
+        tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+        
+        // 画面端での調整
+        if (tooltip.offsetLeft + tooltip.offsetWidth > window.innerWidth - 10) {
+            tooltip.style.left = (window.innerWidth - tooltip.offsetWidth - 10) + 'px';
+        }
+        if (tooltip.offsetTop < 10) {
+            tooltip.style.top = (rect.bottom + 10) + 'px';
+        }
+    }
+
+    hideTooltip() {
+        const tooltips = document.querySelectorAll('.tooltip');
+        tooltips.forEach(tooltip => tooltip.remove());
+    }
+
+    toggleTooltip(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const existingTooltip = document.querySelector('.tooltip');
+        if (existingTooltip) {
+            this.hideTooltip();
+        } else {
+            this.showTooltip(event);
+        }
+    }
+
+    hideAllTooltips() {
+        const tooltips = document.querySelectorAll('.tooltip');
+        tooltips.forEach(tooltip => tooltip.remove());
     }
 }
 
