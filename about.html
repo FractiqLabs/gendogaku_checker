@@ -36,7 +36,7 @@
             認定あり：880円～1,370円
           </div>
         </div>
-        <p class="highlight">月30日利用した場合、<strong>最大で月額約9万円もの負担軽減</strong>になることがあります。</p>
+        <p class="highlight">月30日利用した場合、<strong class="animated-underline">最大で月額約9万円もの負担軽減</strong>になることがあります。</p>
       </section>
 
       <section class="about-section">
@@ -242,6 +242,48 @@
         right: 20px;
         padding: 10px 16px;
         font-size: 12px;
+      }
+    }
+
+    /* 下線アニメーション */
+    .animated-underline {
+      position: relative;
+      display: inline-block;
+    }
+
+    .animated-underline::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 3px;
+      bottom: -2px;
+      left: 0;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      animation: underlineSlide 3s ease-in-out 1s forwards;
+    }
+
+    @keyframes underlineSlide {
+      0% {
+        width: 0;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+
+    /* ページ読み込み時のアニメーション遅延 */
+    .animated-underline {
+      animation: fadeIn 0.5s ease-in-out 0.5s backwards;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   </style>
