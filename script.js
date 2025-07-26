@@ -272,16 +272,30 @@ class Questionnaire {
         document.body.appendChild(tooltip);
         
         const rect = icon.getBoundingClientRect();
-        tooltip.style.left = Math.max(10, rect.left - tooltip.offsetWidth / 2 + rect.width / 2) + 'px';
-        tooltip.style.top = (rect.top - tooltip.offsetHeight - 10) + 'px';
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
         
-        // 画面端での調整
-        if (tooltip.offsetLeft + tooltip.offsetWidth > window.innerWidth - 10) {
-            tooltip.style.left = (window.innerWidth - tooltip.offsetWidth - 10) + 'px';
+        // 初期位置設定（上側に表示）
+        let tooltipLeft = rect.left + scrollLeft - tooltip.offsetWidth / 2 + rect.width / 2;
+        let tooltipTop = rect.top + scrollTop - tooltip.offsetHeight - 10;
+        let showBelow = false;
+        
+        // 画面上端チェック
+        if (tooltipTop < scrollTop + 10) {
+            tooltipTop = rect.bottom + scrollTop + 10;
+            showBelow = true;
+            tooltip.classList.add('below');
         }
-        if (tooltip.offsetTop < 10) {
-            tooltip.style.top = (rect.bottom + 10) + 'px';
+        
+        // 画面左右端チェック
+        if (tooltipLeft < scrollLeft + 10) {
+            tooltipLeft = scrollLeft + 10;
+        } else if (tooltipLeft + tooltip.offsetWidth > scrollLeft + window.innerWidth - 10) {
+            tooltipLeft = scrollLeft + window.innerWidth - tooltip.offsetWidth - 10;
         }
+        
+        tooltip.style.left = tooltipLeft + 'px';
+        tooltip.style.top = tooltipTop + 'px';
     }
 
     hideTooltip() {
