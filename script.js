@@ -440,6 +440,8 @@ function saveAsText() {
 }
 
 function generateQRCode() {
+    console.log('generateQRCode関数が呼び出されました');
+    alert('QRコード生成が開始されました');
     const qrContainer = document.getElementById('qrCodeContainer');
     
     // QRコードが既に表示されている場合は非表示にする
@@ -521,9 +523,11 @@ function checkSharedResult() {
 
 // 初期表示
 window.onload = () => {
+    console.log('ページが読み込まれました');
     // 共有された結果があるかチェック
     if (!checkSharedResult()) {
         // 通常の診断開始
+        console.log('通常の診断を開始します');
         questionnaire.showQuestion(0);
     }
 };
