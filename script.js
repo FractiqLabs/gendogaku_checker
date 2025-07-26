@@ -239,6 +239,11 @@ class Questionnaire {
 const questionnaire = new Questionnaire();
 
 function handleAnswer(answer, questionId) {
+    // タップ後のフォーカスをクリア
+    if (document.activeElement) {
+        document.activeElement.blur();
+    }
+    
     if (answer === 'back') {
         const currentQuestion = questionnaire.questions.find(q => q.id === questionId);
         const prevId = currentQuestion.prev;
