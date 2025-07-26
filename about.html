@@ -250,7 +250,7 @@
     /* 下線アニメーション */
     .animated-underline {
       position: relative;
-      display: inline-block;
+      display: block;
     }
 
     .animated-underline::after {
@@ -258,7 +258,7 @@
       position: absolute;
       width: 0;
       height: 3px;
-      bottom: -2px;
+      bottom: -5px;
       left: 0;
       background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
       animation: underlineSlide 1.5s ease-in-out 0.5s forwards;
