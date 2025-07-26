@@ -488,19 +488,34 @@ footer nav a {
     display: flex;
     justify-content: center;
     gap: 0.5rem; /* ボタン間の余白を調整 */
+    flex-wrap: nowrap;
 }
 
 .result-actions button {
     background-color: var(--secondary-color);
     color: var(--white-color);
-    padding: 0.6rem 1.2rem; /* ボタンを小さくする */
-    font-size: 0.8rem; /* フォントサイズを小さくする */
+    padding: 0.6rem 1rem; /* ボタンを小さくする */
+    font-size: 0.75rem; /* フォントサイズを小さくする */
     border-radius: 8px;
+    white-space: nowrap;
+    min-width: 0;
 }
 
 .result-actions button:hover {
     background-color: var(--primary-color);
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .result-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .result-actions button {
+        width: 100%;
+        max-width: 200px;
+    }
 }
 
 #resultArea > button {

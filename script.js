@@ -441,7 +441,6 @@ function saveAsText() {
 
 function generateQRCode() {
     const qrContainer = document.getElementById('qrCodeContainer');
-    const currentUrl = window.location.href;
     
     // QRコードが既に表示されている場合は非表示にする
     if (!qrContainer.classList.contains('hidden')) {
@@ -449,14 +448,28 @@ function generateQRCode() {
         return;
     }
     
+    // 診断結果の詳細情報を含むURLパラメータを作成
+    const resultText = document.getElementById('resultText').textContent;
+    const resultExplanation = document.getElementById('resultExplanation').textContent;
+    const currentUrl = window.location.href.split('?')[0]; // クエリパラメータを除去
+    
+    // 結果情報をURLパラメータとして追加
+    const params = new URLSearchParams({
+        result: resultText,
+        explanation: resultExplanation,
+        shared: 'true'
+    });
+    
+    const shareUrl = `${currentUrl}?${params.toString()}`;
+    
     // QRコード生成（QR Server APIを使用）
-    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(currentUrl)}`;
+    const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareUrl)}`;
     
     qrContainer.innerHTML = `
         <div class="qr-content">
             <h3>診断結果を共有</h3>
             <img src="${qrCodeUrl}" alt="QRコード" class="qr-image">
-            <p class="qr-description">このQRコードをスキャンして診断結果を共有できます</p>
+            <p class="qr-description">このQRコードをスキャンすると診断結果が表示されます</p>
             <button onclick="document.getElementById('qrCodeContainer').classList.add('hidden')" class="qr-close-btn">閉じる</button>
         </div>
     `;
@@ -464,7 +477,33 @@ function generateQRCode() {
     qrContainer.classList.remove('hidden');
 }
 
+// URLパラメータから共有された結果を表示
+function checkSharedResult() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('shared') === 'true') {
+        const result = urlParams.get('result');
+        const explanation = urlParams.get('explanation');
+        
+        if (result && explanation) {
+            // 結果エリアに共有された内容を表示
+            document.getElementById('resultText').textContent = result;
+            document.getElementById('resultExplanation').textContent = explanation;
+            document.getElementById('answerHistory').innerHTML = '<h3>共有された診断結果</h3><p>この結果は他のユーザーから共有されたものです。</p>';
+            
+            // 結果エリアを表示、質問エリアを非表示
+            document.getElementById('resultArea').classList.remove('hidden');
+            document.getElementById('questionArea').classList.add('hidden');
+            return true;
+        }
+    }
+    return false;
+}
+
 // 初期表示
 window.onload = () => {
-    questionnaire.showQuestion(0);
+    // 共有された結果があるかチェック
+    if (!checkSharedResult()) {
+        // 通常の診断開始
+        questionnaire.showQuestion(0);
+    }
 };
