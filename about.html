@@ -250,26 +250,19 @@
     /* 下線アニメーション */
     .animated-underline {
       position: relative;
-      display: block;
-    }
-
-    .animated-underline::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 3px;
-      bottom: -5px;
-      left: 0;
-      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      display: inline;
+      background: linear-gradient(to right, var(--primary-color) 0%, var(--secondary-color) 0%) no-repeat;
+      background-size: 0% 3px;
+      background-position: 0% 100%;
       animation: underlineSlide 1.5s ease-in-out 0.5s forwards;
     }
 
     @keyframes underlineSlide {
       0% {
-        width: 0;
+        background-size: 0% 3px;
       }
       100% {
-        width: 100%;
+        background-size: 100% 3px;
       }
     }
 
