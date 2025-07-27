@@ -92,12 +92,12 @@ class Questionnaire {
         
         questionArea.innerHTML = `
             ${progressHTML}
-            ${backButtonHTML}
             <div class="question">
                 <p>${question.text} ${tooltipHTML}</p>
                 <div class="options">
                     ${this.getOptionsHTML(question)}
                 </div>
+                ${backButtonHTML}
             </div>
         `;
         
