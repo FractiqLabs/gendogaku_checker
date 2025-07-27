@@ -97,8 +97,8 @@ class Questionnaire {
                 <div class="options">
                     ${this.getOptionsHTML(question)}
                 </div>
-                ${backButtonHTML}
             </div>
+            ${backButtonHTML}
         `;
         
         // ツールチップの初期化
