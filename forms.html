@@ -51,85 +51,29 @@
       </section>
 
       <section class="about-section">
-        <h4>地域別申請書類</h4>
-        
-        <!-- 五十音インデックス -->
-        <div class="index-tabs">
-          <button class="index-tab active" onclick="showCities('か')">か</button>
-          <button class="index-tab" onclick="showCities('さ')">さ</button>
-          <button class="index-tab" onclick="showCities('し')">し</button>
-          <button class="index-tab" onclick="showCities('せ')">せ</button>
-          <button class="index-tab" onclick="showCities('と')">と</button>
-          <button class="index-tab" onclick="showCities('ね')">ね</button>
-        </div>
-
-        <!-- 市区町村リスト -->
-        <div class="cities-container">
-          <div id="cities-か" class="cities-group active">
-            <div class="city-item">
-              <a href="https://www.city.kawagoe.saitama.jp/kenko/fukushi/1006853/1006880/1006886.html" target="_blank" rel="noopener">
-                <strong>川越市</strong><br>
-                <span class="prefecture">埼玉県</span>
-              </a>
-            </div>
-            <div class="city-item">
-              <a href="https://www.city.koshigaya.saitama.jp/net/kaigohokenka/tetsuzukiapp127.html" target="_blank" rel="noopener">
-                <strong>越谷市</strong><br>
-                <span class="prefecture">埼玉県</span>
-              </a>
-            </div>
+        <h4>主要地域の申請書類</h4>
+        <div class="region-links">
+          
+          <div class="region-group">
+            <h5>埼玉県</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.saitama.lg.jp/002/003/003/001/002/p003093.html" target="_blank" rel="noopener">さいたま市</a></li>
+              <li><a href="https://www.city.kawagoe.saitama.jp/kenko/fukushi/1006853/1006880/1006886.html" target="_blank" rel="noopener">川越市</a></li>
+              <li><a href="https://www.city.tokorozawa.saitama.jp/kenko/kaigohoken/kaigo4/kyuufufutangendogaku.html" target="_blank" rel="noopener">所沢市</a></li>
+              <li><a href="https://www.city.koshigaya.saitama.jp/net/kaigohokenka/tetsuzukiapp127.html" target="_blank" rel="noopener">越谷市</a></li>
+            </ul>
           </div>
 
-          <div id="cities-さ" class="cities-group">
-            <div class="city-item">
-              <a href="https://www.city.saitama.lg.jp/002/003/003/001/002/p003093.html" target="_blank" rel="noopener">
-                <strong>さいたま市</strong><br>
-                <span class="prefecture">埼玉県</span>
-              </a>
-            </div>
+          <div class="region-group">
+            <h5>東京都</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.shinjuku.lg.jp/fukushi/kaigo02_001005.html" target="_blank" rel="noopener">新宿区</a></li>
+              <li><a href="https://www.city.shibuya.tokyo.jp/fukushi/kaigo/kaigo_hoken.html" target="_blank" rel="noopener">渋谷区</a></li>
+              <li><a href="https://www.city.setagaya.lg.jp/mokuji/fukushi/003/005/001/d00004239.html" target="_blank" rel="noopener">世田谷区</a></li>
+              <li><a href="https://www.city.nerima.tokyo.jp/kurashi/kaigo/index.html" target="_blank" rel="noopener">練馬区</a></li>
+            </ul>
           </div>
 
-          <div id="cities-し" class="cities-group">
-            <div class="city-item">
-              <a href="https://www.city.shinjuku.lg.jp/fukushi/kaigo02_001005.html" target="_blank" rel="noopener">
-                <strong>新宿区</strong><br>
-                <span class="prefecture">東京都</span>
-              </a>
-            </div>
-            <div class="city-item">
-              <a href="https://www.city.shibuya.tokyo.jp/fukushi/kaigo/kaigo_hoken.html" target="_blank" rel="noopener">
-                <strong>渋谷区</strong><br>
-                <span class="prefecture">東京都</span>
-              </a>
-            </div>
-          </div>
-
-          <div id="cities-せ" class="cities-group">
-            <div class="city-item">
-              <a href="https://www.city.setagaya.lg.jp/mokuji/fukushi/003/005/001/d00004239.html" target="_blank" rel="noopener">
-                <strong>世田谷区</strong><br>
-                <span class="prefecture">東京都</span>
-              </a>
-            </div>
-          </div>
-
-          <div id="cities-と" class="cities-group">
-            <div class="city-item">
-              <a href="https://www.city.tokorozawa.saitama.jp/kenko/kaigohoken/kaigo4/kyuufufutangendogaku.html" target="_blank" rel="noopener">
-                <strong>所沢市</strong><br>
-                <span class="prefecture">埼玉県</span>
-              </a>
-            </div>
-          </div>
-
-          <div id="cities-ね" class="cities-group">
-            <div class="city-item">
-              <a href="https://www.city.nerima.tokyo.jp/kurashi/kaigo/index.html" target="_blank" rel="noopener">
-                <strong>練馬区</strong><br>
-                <span class="prefecture">東京都</span>
-              </a>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -264,87 +208,6 @@
       font-size: 0.9rem;
     }
 
-    /* 五十音インデックス */
-    .index-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 20px 0;
-      justify-content: center;
-    }
-
-    .index-tab {
-      background-color: var(--light-gray-color);
-      border: 1px solid var(--gray-color);
-      color: var(--text-color);
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-      min-width: 40px;
-    }
-
-    .index-tab:hover, .index-tab.active {
-      background-color: var(--primary-color);
-      color: var(--white-color);
-      border-color: var(--primary-color);
-    }
-
-    /* 市区町村コンテナ */
-    .cities-container {
-      min-height: 200px;
-      margin: 20px 0;
-    }
-
-    .cities-group {
-      display: none;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .cities-group.active {
-      display: grid;
-    }
-
-    .city-item {
-      background-color: var(--white-color);
-      border: 1px solid var(--gray-color);
-      border-radius: 8px;
-      transition: all 0.3s ease;
-      overflow: hidden;
-    }
-
-    .city-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border-color: var(--primary-color);
-    }
-
-    .city-item a {
-      display: block;
-      padding: 15px;
-      text-decoration: none;
-      color: var(--text-color);
-    }
-
-    .city-item strong {
-      color: var(--primary-color);
-      font-size: 1rem;
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .prefecture {
-      font-size: 0.8rem;
-      color: var(--secondary-color);
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
 
     @media (max-width: 768px) {
       .search-container {
@@ -359,38 +222,10 @@
         grid-template-columns: 1fr;
       }
 
-      .cities-group {
-        grid-template-columns: 1fr;
-      }
-
-      .index-tabs {
-        gap: 5px;
-      }
-
-      .index-tab {
-        padding: 6px 12px;
-        font-size: 0.8rem;
-        min-width: 35px;
-      }
     }
   </style>
 
   <script>
-    // 五十音インデックス機能
-    function showCities(index) {
-      // 全てのタブとグループを非アクティブに
-      document.querySelectorAll('.index-tab').forEach(tab => {
-        tab.classList.remove('active');
-      });
-      document.querySelectorAll('.cities-group').forEach(group => {
-        group.classList.remove('active');
-      });
-
-      // 選択されたタブとグループをアクティブに
-      event.target.classList.add('active');
-      document.getElementById('cities-' + index).classList.add('active');
-    }
-
     function searchRegion() {
       const searchTerm = document.getElementById('regionSearch').value.trim();
       const resultsDiv = document.getElementById('searchResults');
