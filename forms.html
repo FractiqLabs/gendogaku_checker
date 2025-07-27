@@ -208,6 +208,30 @@
       font-size: 0.9rem;
     }
 
+    .error-message {
+      background-color: #fff5f5;
+      border: 1px solid #fed7d7;
+      border-left: 4px solid #e53e3e;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    .error-message h5 {
+      color: #e53e3e;
+      margin-bottom: 10px;
+      font-size: 1rem;
+    }
+
+    .error-message ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+
+    .error-message li {
+      margin-bottom: 5px;
+      color: #2d3748;
+    }
 
     @media (max-width: 768px) {
       .search-container {
@@ -235,7 +259,35 @@
         return;
       }
 
-      // シンプルな検索機能（実際にはより高度な検索を実装可能）
+      // 市区町村名の妥当性チェック
+      const validPatterns = [
+        /.*[市区町村]$/, // 「市」「区」「町」「村」で終わる
+        /.*[県府都]$/, // 「県」「府」「都」で終わる
+        /(さいたま|横浜|川崎|千葉|船橋|柏|松戸|市川|浦安|習志野|流山|八千代|我孫子|鎌ケ谷|佐倉|印西|白井|富津|君津|木更津|袖ケ浦|市原|茂原|東金|山武|八街|四街道|酒々井|栄|芝山|横芝光|多古|神崎|大網白里|九十九里|一宮|睦沢|長生|白子|長柄|長南|大多喜|御宿|鋸南)/i, // 主要都市名
+      ];
+
+      const isValidCityName = validPatterns.some(pattern => pattern.test(searchTerm));
+
+      if (!isValidCityName) {
+        resultsDiv.innerHTML = `
+          <div class="error-message">
+            <h5>⚠️ 検索エラー</h5>
+            <p>「${searchTerm}」は有効な市区町村名ではないようです。</p>
+            <p><strong>正しい入力例：</strong></p>
+            <ul>
+              <li>さいたま市</li>
+              <li>新宿区</li>
+              <li>川越市</li>
+              <li>世田谷区</li>
+            </ul>
+            <p class="note">市区町村名を正確に入力してください。</p>
+          </div>
+        `;
+        resultsDiv.style.display = 'block';
+        return;
+      }
+
+      // 正常な検索結果
       resultsDiv.innerHTML = `
         <h5>「${searchTerm}」の検索結果</h5>
         <p>以下の方法で申請書を見つけることができます：</p>
