@@ -24,7 +24,6 @@
     <header>
       <nav class="header-nav">
         <a href="about.html" class="nav-link">負担限度額認定とは？</a>
-        <a href="forms.html" class="nav-link">申請書類ダウンロード</a>
       </nav>
       <h1>負担限度額認定チェッカー</h1>
       <p>いくつかの簡単な質問に答えるだけで、介護保険の負担限度額認定がどの段階に該当するかをチェックできます。</p>
@@ -44,6 +43,7 @@
           <button onclick="printResult()">結果を印刷</button>
           <button onclick="saveAsText()">結果をテキストで保存</button>
           <button onclick="generateQRCode()">QRコードで共有</button>
+          <a href="forms.html" class="result-action-link">申請書類ダウンロード</a>
         </div>
         <div id="qrCodeContainer" class="qr-container hidden"></div>
         <button id="diagnoseAgainButton" onclick="goToTop()">もう一度診断する</button>
