@@ -453,17 +453,20 @@ function generateQRCode() {
     // 診断結果の詳細情報を含むURLパラメータを作成
     const resultText = document.getElementById('resultText').textContent;
     const resultExplanation = document.getElementById('resultExplanation').textContent;
+    const answerHistory = document.getElementById('answerHistory').innerHTML;
     const currentUrl = window.location.href.split('?')[0]; // クエリパラメータを除去
     
     console.log('生成されるURL情報:');
     console.log('resultText:', resultText);
     console.log('resultExplanation:', resultExplanation);
+    console.log('answerHistory:', answerHistory);
     console.log('currentUrl:', currentUrl);
     
     // 結果情報をURLパラメータとして追加
     const params = new URLSearchParams({
         result: resultText,
         explanation: resultExplanation,
+        history: answerHistory,
         shared: 'true'
     });
     
@@ -496,9 +499,11 @@ function checkSharedResult() {
     if (urlParams.get('shared') === 'true') {
         const result = urlParams.get('result');
         const explanation = urlParams.get('explanation');
+        const history = urlParams.get('history');
         
         console.log('result パラメータ:', result);
         console.log('explanation パラメータ:', explanation);
+        console.log('history パラメータ:', history);
         
         if (result && explanation) {
             console.log('共有結果を表示します');
@@ -507,14 +512,16 @@ function checkSharedResult() {
             // URLデコードして正しい日本語テキストに変換
             const decodedResult = decodeURIComponent(result);
             const decodedExplanation = decodeURIComponent(explanation);
+            const decodedHistory = history ? decodeURIComponent(history) : '<h3>あなたの回答履歴</h3><p>回答履歴が取得できませんでした。</p>';
             
             console.log('デコード後 result:', decodedResult);
             console.log('デコード後 explanation:', decodedExplanation);
+            console.log('デコード後 history:', decodedHistory);
             
             // 結果エリアに共有された内容を表示
             document.getElementById('resultText').textContent = decodedResult;
             document.getElementById('resultExplanation').textContent = decodedExplanation;
-            document.getElementById('answerHistory').innerHTML = '<h3>あなたの回答履歴</h3><p>この結果は共有されたものです。詳細な回答履歴は省略されています。</p>';
+            document.getElementById('answerHistory').innerHTML = decodedHistory;
             
             // 結果エリアを表示、質問エリアを非表示
             document.getElementById('resultArea').classList.remove('hidden');
