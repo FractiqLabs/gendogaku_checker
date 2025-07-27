@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>申請書類ダウンロード｜負担限度額認定チェッカー</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="icon" sizes="192x192" href="android-chrome-192x192.png">
+  <link rel="icon" sizes="512x512" href="android-chrome-512x512.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta name="theme-color" content="#ffffff">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <nav class="header-nav">
+        <a href="index.html" class="nav-link">チェッカーに戻る</a>
+        <a href="about.html" class="nav-link">負担限度額認定とは？</a>
+      </nav>
+      <h3 style="text-align: left;">申請書類ダウンロード</h3>
+    </header>
+    <main>
+      <section class="about-section">
+        <h4>申請に必要な書類について</h4>
+        <p>負担限度額認定の申請には、以下の書類が一般的に必要です：</p>
+        <ul class="document-list">
+          <li><strong>負担限度額認定申請書</strong>（各市区町村指定の様式）</li>
+          <li><strong>同意書</strong>（預貯金等調査への同意）</li>
+          <li><strong>通帳のコピー</strong>（全ページ）</li>
+          <li><strong>その他金融商品の資料</strong>（有価証券、投資信託等）</li>
+        </ul>
+        <p class="note">※必要書類は市区町村により異なる場合があります。詳細は各窓口でご確認ください。</p>
+      </section>
+
+      <section class="about-section">
+        <h4>地域検索</h4>
+        <div class="search-container">
+          <input type="text" id="regionSearch" placeholder="市区町村名を入力してください（例：新宿区、大阪市）" class="search-input">
+          <button onclick="searchRegion()" class="search-button">検索</button>
+        </div>
+        <div id="searchResults" class="search-results"></div>
+      </section>
+
+      <section class="about-section">
+        <h4>主要地域の申請書類</h4>
+        <div class="region-links">
+          
+          <div class="region-group">
+            <h5>東京都</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.shinjuku.lg.jp/fukushi/kaigo02_001005.html" target="_blank" rel="noopener">新宿区</a></li>
+              <li><a href="https://www.city.shibuya.tokyo.jp/fukushi/kaigo/kaigo_hoken.html" target="_blank" rel="noopener">渋谷区</a></li>
+              <li><a href="https://www.city.setagaya.lg.jp/mokuji/fukushi/003/005/001/d00004239.html" target="_blank" rel="noopener">世田谷区</a></li>
+              <li><a href="https://www.city.nerima.tokyo.jp/kurashi/kaigo/index.html" target="_blank" rel="noopener">練馬区</a></li>
+            </ul>
+          </div>
+
+          <div class="region-group">
+            <h5>神奈川県</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.yokohama.lg.jp/kurashi/fukushi-kaigo/kaigo/index.html" target="_blank" rel="noopener">横浜市</a></li>
+              <li><a href="https://www.city.kawasaki.jp/350/index.html" target="_blank" rel="noopener">川崎市</a></li>
+              <li><a href="https://www.city.sagamihara.kanagawa.jp/kurashi/fukushi/1007395.html" target="_blank" rel="noopener">相模原市</a></li>
+            </ul>
+          </div>
+
+          <div class="region-group">
+            <h5>大阪府</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.osaka.lg.jp/fukushi/page/0000370513.html" target="_blank" rel="noopener">大阪市</a></li>
+              <li><a href="https://www.city.sakai.lg.jp/kurashi/fukushi/kaigo/index.html" target="_blank" rel="noopener">堺市</a></li>
+              <li><a href="https://www.city.higashiosaka.lg.jp/category/1-6-4-0-0.html" target="_blank" rel="noopener">東大阪市</a></li>
+            </ul>
+          </div>
+
+          <div class="region-group">
+            <h5>愛知県</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.nagoya.jp/kenkofukushi/page/0000009319.html" target="_blank" rel="noopener">名古屋市</a></li>
+              <li><a href="https://www.city.toyota.aichi.jp/kurashi/fukushi/kaigo/1003614.html" target="_blank" rel="noopener">豊田市</a></li>
+            </ul>
+          </div>
+
+          <div class="region-group">
+            <h5>埼玉県</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.saitama.jp/002/001/008/006/p002032.html" target="_blank" rel="noopener">さいたま市</a></li>
+              <li><a href="https://www.city.kawagoe.saitama.jp/kurashi/fukushi_kaigo/kaigo/index.html" target="_blank" rel="noopener">川越市</a></li>
+            </ul>
+          </div>
+
+          <div class="region-group">
+            <h5>千葉県</h5>
+            <ul class="link-list">
+              <li><a href="https://www.city.chiba.jp/hokenfukushi/koreishogai/kaigohoken/index.html" target="_blank" rel="noopener">千葉市</a></li>
+              <li><a href="https://www.city.funabashi.lg.jp/kurashi/fukushi/001/index.html" target="_blank" rel="noopener">船橋市</a></li>
+            </ul>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="about-section">
+        <h4>お住まいの地域が見つからない場合</h4>
+        <p>上記に掲載されていない市区町村の場合、以下の方法で申請書を入手できます：</p>
+        <ul class="help-list">
+          <li><strong>市区町村のホームページ</strong>で「介護保険 負担限度額認定」で検索</li>
+          <li><strong>介護保険担当窓口</strong>に直接お問い合わせ</li>
+          <li><strong>地域包括支援センター</strong>でのご相談</li>
+        </ul>
+        <div class="search-tip">
+          <p><strong>検索のコツ：</strong> 「[市区町村名] 介護保険 負担限度額認定 申請書」でGoogle検索すると見つかりやすいです。</p>
+        </div>
+      </section>
+
+      <div class="back-to-checker">
+        <p><a href="index.html" class="btn-back">チェッカーで診断してみる</a></p>
+      </div>
+    </main>
+    <footer>
+      <p>&copy; 2025 負担限度額認定チェッカー</p>
+    </footer>
+  </div>
+
+  <style>
+    .search-container {
+      display: flex;
+      gap: 10px;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 250px;
+      padding: 10px;
+      border: 1px solid var(--gray-color);
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .search-button {
+      background-color: var(--primary-color);
+      color: var(--white-color);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .search-button:hover {
+      background-color: var(--secondary-color);
+    }
+
+    .search-results {
+      margin-top: 15px;
+      padding: 15px;
+      background-color: var(--white-color);
+      border-radius: 8px;
+      border: 1px solid var(--gray-color);
+      display: none;
+    }
+
+    .region-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .region-group {
+      background-color: var(--white-color);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--gray-color);
+    }
+
+    .region-group h5 {
+      color: var(--primary-color);
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--light-gray-color);
+      padding-bottom: 5px;
+    }
+
+    .link-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .link-list li {
+      margin-bottom: 8px;
+    }
+
+    .link-list a {
+      color: var(--primary-color);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .link-list a:hover {
+      color: var(--secondary-color);
+      text-decoration: underline;
+    }
+
+    .document-list, .help-list {
+      margin: 15px 0;
+      padding-left: 20px;
+    }
+
+    .document-list li, .help-list li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .search-tip {
+      background-color: #f8f9fa;
+      padding: 12px;
+      border-radius: 6px;
+      border-left: 4px solid var(--accent-color);
+      margin-top: 15px;
+    }
+
+    .search-tip p {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-input {
+        min-width: 100%;
+      }
+
+      .region-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+
+  <script>
+    function searchRegion() {
+      const searchTerm = document.getElementById('regionSearch').value.trim();
+      const resultsDiv = document.getElementById('searchResults');
+      
+      if (!searchTerm) {
+        alert('検索する市区町村名を入力してください');
+        return;
+      }
+
+      // シンプルな検索機能（実際にはより高度な検索を実装可能）
+      resultsDiv.innerHTML = `
+        <h5>「${searchTerm}」の検索結果</h5>
+        <p>以下の方法で申請書を見つけることができます：</p>
+        <ol>
+          <li><strong>Google検索：</strong> <a href="https://www.google.com/search?q=${encodeURIComponent(searchTerm + ' 介護保険 負担限度額認定 申請書')}" target="_blank" rel="noopener">"${searchTerm} 介護保険 負担限度額認定 申請書"</a> で検索</li>
+          <li><strong>市区町村HP：</strong> ${searchTerm}の公式ホームページから介護保険のページを確認</li>
+          <li><strong>電話確認：</strong> ${searchTerm}の介護保険担当窓口にお問い合わせください</li>
+        </ol>
+        <p class="note">※直接リンクが見つからない場合は、上記の方法をお試しください。</p>
+      `;
+      resultsDiv.style.display = 'block';
+    }
+
+    // Enterキーでも検索できるように
+    document.getElementById('regionSearch').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        searchRegion();
+      }
+    });
+  </script>
+</body>
+</html>
